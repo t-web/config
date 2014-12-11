@@ -3,6 +3,7 @@
     "description": "Multi-format configuration loader",
     "type": "library",
     "license": "MIT",
+    "version": "0.0.1",
     "homepage": "https://github.com/alanpich/Slender-Configurator",
     "keywords": [
         "slender",
