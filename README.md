@@ -1,6 +1,6 @@
 Slender Configurator
 ===
-
+ 
 ```php
 <?php
 
