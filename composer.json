@@ -1,5 +1,5 @@
 {
-    "name": "alanpich/configurator",
+    "name": "slender/configurator",
     "description": "Multi-format configuration loader",
     "type": "library",
     "license": "MIT",
