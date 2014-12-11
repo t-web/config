@@ -1,0 +1,19 @@
+{
+    "name": "alanpich/configurator",
+    "description": "Multi-format configuration loader",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alan Pich",
+            "email": "alanp@native.com"
+        }
+    ],
+    "suggest": {
+        "symfony/yaml": "For using YAML configuration files"
+    },
+    "autoload": {
+        "psr-4": {
+            "Slender\\Configurator\\": "src"
+        }
+    }
+}
