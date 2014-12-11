@@ -1,7 +1,18 @@
 {
     "name": "alanpich/configurator",
     "description": "Multi-format configuration loader",
+    "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/alanpich/Slender-Configurator",
+    "keywords": [
+        "slender",
+        "config",
+        "configuration",
+        "loader",
+        "yaml",
+        "json",
+        "ini"
+    ],
     "authors": [
         {
             "name": "Alan Pich",

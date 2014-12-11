@@ -5,6 +5,7 @@ use Slender\Configurator;
 use Slender\Configurator\FileTypeAdapter;
 
 $PROJECT_ROOT = dirname(__FILE__);
+$ENVIRONMENT = 'development';
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,17 +13,17 @@ $PROJECT_ROOT = dirname(__FILE__);
 //    - passing the optional string $basePath as first argument will allow
 //      using relative paths to folders
 ///////////////////////////////////////////////////////////////////////////////
-$configurator = new Configurator\Configurator( $PROJECT_ROOT );
-
+$configurator = new Configurator\Configurator( $PROJECT_ROOT, $ENVIRONMENT );
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Add the adaptors to load the type of files we want
 ///////////////////////////////////////////////////////////////////////////////
 $configurator
-    ->addAdaptor( new FileTypeAdapter\PHP()  )
-    ->addAdaptor( new FileTypeAdapter\YAML() );
-
+    ->addAdaptor( new FileTypeAdapter\PHP()   )
+    ->addAdaptor( new FileTypeAdapter\JSON()  )
+    ->addAdaptor( new FileTypeAdapter\INI()   )
+    ->addAdaptor( new FileTypeAdapter\YAML()  );
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,7 +33,7 @@ $configurator
     ->addDirectory('/absolute/path/to/folder')
     ->addDirectory('./config/core')
     ->addDirectory('./config/app')
-    ->addDirectory('./config/{MY_ENV_VAR}'))
+    ->addDirectory('./config/{ENVIRONMENT}'))
     
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,6 +46,6 @@ $configurator->load();
 ///////////////////////////////////////////////////////////////////////////////
 //  Access the data
 ///////////////////////////////////////////////////////////////////////////////
-$foo = $configurator['my']['settings']['namespace'];
+print_r($configurator->toArray());
 
 ```
