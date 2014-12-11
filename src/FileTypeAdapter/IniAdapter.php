@@ -29,58 +29,32 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Slender\Configurator\FileTypeAdapter;
 
-use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
-use Symfony\Component\Yaml\Yaml as YamlParser;
+namespace Slender\Configurator\FileTypeAdapter;
 
 
 /**
- * Class YAML
+ * Class IniAdapter
  * @package Slender\Configurator\FileTypeAdapter
  */
-class YAML implements FileTypeAdapterInterface
+class IniAdapter extends AbstractAdapter
 {
     /**
-     * @var string
-     */
-    private $glob = '*.yml';
-
-
-    /**
+     * @param string $ext
      * @param bool $recursive
      */
-    public function __construct( $recursive = false )
+    public function __construct($ext = 'ini', $recursive = false)
     {
-        if($recursive){
-            $this->glob = "**/*.yml";
-        }
+        $this->glob = '*.' . $ext;
+        parent::__construct($recursive);
     }
-
 
     /**
-     * Load configuration from a specified directory,
-     * and return it as a nested array
-     *
-     * @param string $dir Directory to load from
-     * @return array    The configuration
+     * @param $filePath
+     * @return array
      */
-    public function loadFrom($dir)
+    public function parse($filePath)
     {
-        $pattern = $dir.'/'.$this->glob;
-        $files = glob($pattern);
-
-        $conf = [];
-
-        foreach($files as $filePath){
-            $arr = YamlParser::parse(file_get_contents($filePath));
-            $conf = array_merge_recursive($conf, $arr );
-        }
-
-
-        return $conf;
+        return parse_ini_file($filePath, true);
     }
-
-
-
 }

@@ -42,7 +42,7 @@ class ConfigurationObject implements \ArrayAccess
     /**
      * @var array
      */
-    protected $_config = [];
+    protected $config = [];
 
 
     //////////////////////////////////////////////////////////////////
@@ -54,8 +54,8 @@ class ConfigurationObject implements \ArrayAccess
      * @return null
      */
     public function __get($offset){
-        if(isset($_config[$offset])){
-            return $_config[$offset];
+        if(isset($this->config[$offset])){
+            return $this->config[$offset];
         }
         return null;
     }
@@ -77,7 +77,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->_config[$offset]);
+        return isset($this->config[$offset]);
     }
 
     /**
@@ -91,7 +91,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->_config[$offset];
+        return $this->config[$offset];
     }
 
     /**
@@ -108,7 +108,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        $this->_config[$offset] = $value;
+        $this->config[$offset] = $value;
     }
 
     /**
@@ -122,6 +122,6 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        unset($this->_config[$offset]);
+        unset($this->config[$offset]);
     }
 }

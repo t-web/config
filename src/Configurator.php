@@ -32,7 +32,6 @@
 namespace Slender\Configurator;
 
 
-
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -76,11 +75,11 @@ class Configurator extends ConfigurationObject
      * @param null $rootPath
      * @param null $env
      */
-    public function __construct( $rootPath = null, $env = null){
+    public function __construct($rootPath = null, $env = null)
+    {
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
     }
-
 
 
     /**
@@ -89,15 +88,15 @@ class Configurator extends ConfigurationObject
      * @param $dir
      * @return $this
      */
-    public function addDirectory( $dir ){
+    public function addDirectory($dir)
+    {
         // Avoid duplicates
-        if( in_array($dir, $this->directories)){
-            return $this;
-        }
-        $this->directories[] = $dir;
+        if (!in_array($dir, $this->directories)) {
+            $this->directories[] = $dir;
 
-        if($this->initialLoadDone){
-            // Config already loaded... do the load for this dir separately...
+            if ($this->initialLoadDone) {
+                // Config already loaded... do the load for this dir separately...
+            }
         }
 
         return $this;
@@ -108,9 +107,9 @@ class Configurator extends ConfigurationObject
      * @param FileTypeAdapterInterface $adapter
      * @return $this
      */
-    public function addAdapter( FileTypeAdapterInterface $adapter )
+    public function addAdapter(FileTypeAdapterInterface $adapter)
     {
-        if(!in_array($adapter,$this->fileTypeAdapters)) {
+        if (!in_array($adapter, $this->fileTypeAdapters)) {
             $this->fileTypeAdapters[] = $adapter;
         }
 
@@ -118,34 +117,32 @@ class Configurator extends ConfigurationObject
     }
 
 
-
     /**
      * Wipe the config and load it all again
      *
      */
-    public function load(){
+    public function load()
+    {
         // Wipe any existing values
-        $this->_config = [];
+        $this->config = [];
 
         // Loop through each directory
-        foreach($this->directories as $dir){
-
-
+        foreach ($this->directories as $dir) {
             // Handle relative paths
-            if(substr($dir,0,2) == './'){
-                $dir = $this->getRootPath().substr($dir,2);
+            if (substr($dir, 0, 2) == './') {
+                $dir = $this->getRootPath() . substr($dir, 2);
             }
 
             // Expand any placeholders
-            $dir = self::replacePlaceholders($dir,[
+            $dir = self::replacePlaceholders($dir, [
                 'ENVIRONMENT' => $this->getEnvironment()
             ]);
 
             // Remove any trailing slashes from dir
-            $dir = rtrim($dir,'/');
+            $dir = rtrim($dir, '/');
 
             // Pass to each fileadapter in turn
-            foreach($this->fileTypeAdapters as $adapter){
+            foreach ($this->fileTypeAdapters as $adapter) {
                 $conf = $adapter->loadFrom($dir);
                 $this->merge($conf);
             }
@@ -156,8 +153,9 @@ class Configurator extends ConfigurationObject
     /**
      * @param array $conf
      */
-    public function merge( array $conf = array() ){
-        $appConfig = &$this->_config;
+    public function merge(array $conf = array())
+    {
+        $appConfig = &$this->config;
         // Iterate through new top-level keys
         foreach ($conf as $key => $value) {
             // If doesnt exist yet, create it
@@ -181,11 +179,10 @@ class Configurator extends ConfigurationObject
     /**
      * @return array
      */
-    public function toArray(){
-        return $this->_config;
+    public function toArray()
+    {
+        return $this->config;
     }
-
-
 
 
     /**
@@ -228,7 +225,7 @@ class Configurator extends ConfigurationObject
      */
     public function setRootPath($rootPath)
     {
-        $this->rootPath = rtrim($rootPath,'/').'/';
+        $this->rootPath = rtrim($rootPath, '/') . '/';
         return $this;
     }
 
@@ -242,9 +239,9 @@ class Configurator extends ConfigurationObject
      */
     public static function replacePlaceholders($str, $params = [])
     {
-        foreach($params as $key => $value){
-            $key = '{'.$key.'}';
-            $str = str_replace($key,$value,$str);
+        foreach ($params as $key => $value) {
+            $key = '{' . $key . '}';
+            $str = str_replace($key, $value, $str);
         }
         return $str;
     }
@@ -255,18 +252,18 @@ class Configurator extends ConfigurationObject
      * @param $arr2
      * @return array
      */
-    public static function mergeArrays( &$arr1, &$arr2 ){
-
-        foreach($arr2 as $key => $val){
-            if( !isset($arr1[$key]) ){
+    public static function mergeArrays(&$arr1, &$arr2)
+    {
+        foreach ($arr2 as $key => $val) {
+            if (!isset($arr1[$key])) {
                 // If key doesnt yet exist, just slap it in there
-                if(gettype($val) == 'object'){
-                    $val = (array) $val;
+                if (gettype($val) == 'object') {
+                    $val = (array)$val;
                 }
                 $arr1[$key] = $val;
             } else {
                 // Key exists, do an intelligent merge
-                if(gettype($arr1[$key]) == 'array'){
+                if (gettype($arr1[$key]) == 'array') {
                     $arr1[$key] = self::mergeArrays($arr1[$key], $arr2[$key]);
                 } else {
                     $arr1[$key] = $val;
@@ -274,8 +271,6 @@ class Configurator extends ConfigurationObject
             }
         }
 
-        return array_merge_recursive($arr1,$arr2);
+        return array_merge_recursive($arr1, $arr2);
     }
-
-
 } 

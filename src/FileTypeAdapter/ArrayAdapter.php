@@ -31,54 +31,24 @@
  */
 namespace Slender\Configurator\FileTypeAdapter;
 
-use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
-
 /**
- * Class JSON
+ * Class ArrayAdapter
  * @package Slender\Configurator\FileTypeAdapter
  */
-class JSON implements FileTypeAdapterInterface
+class ArrayAdapter extends AbstractAdapter
 {
     /**
      * @var string
      */
-    private $glob = '*.json';
+    protected $glob = '*.php';
 
 
     /**
-     * @param bool $recursive
+     * @param $filePath
+     * @return array
      */
-    public function __construct( $recursive = false )
+    public function parse($filePath)
     {
-        if($recursive){
-            $this->glob = "**/*.json";
-        }
+        return include $filePath;
     }
-
-
-    /**
-     * Load configuration from a specified directory,
-     * and return it as a nested array
-     *
-     * @param string $dir Directory to load from
-     * @return array    The configuration
-     */
-    public function loadFrom($dir)
-    {
-        $pattern = $dir.'/'.$this->glob;
-        $files = glob($pattern);
-
-        $conf = [];
-
-        foreach($files as $filePath){
-            $arr = json_decode(file_get_contents($filePath), true);
-            $conf = array_merge_recursive($conf, $arr );
-        }
-
-
-        return $conf;
-    }
-
-
-
 }
