@@ -96,10 +96,6 @@ class Configurator extends ConfigurationObject
         }
         $this->directories[] = $dir;
 
-        if($this->initialLoadDone){
-            // Config already loaded... do the load for this dir separately...
-        }
-
         return $this;
     }
 
@@ -247,34 +243,6 @@ class Configurator extends ConfigurationObject
             $str = str_replace($key,$value,$str);
         }
         return $str;
-    }
-
-
-    /**
-     * @param $arr1
-     * @param $arr2
-     * @return array
-     */
-    public static function mergeArrays( &$arr1, &$arr2 ){
-
-        foreach($arr2 as $key => $val){
-            if( !isset($arr1[$key]) ){
-                // If key doesnt yet exist, just slap it in there
-                if(gettype($val) == 'object'){
-                    $val = (array) $val;
-                }
-                $arr1[$key] = $val;
-            } else {
-                // Key exists, do an intelligent merge
-                if(gettype($arr1[$key]) == 'array'){
-                    $arr1[$key] = self::mergeArrays($arr1[$key], $arr2[$key]);
-                } else {
-                    $arr1[$key] = $val;
-                }
-            }
-        }
-
-        return array_merge_recursive($arr1,$arr2);
     }
 
 

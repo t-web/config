@@ -54,8 +54,8 @@ class ConfigurationObject implements \ArrayAccess
      * @return null
      */
     public function __get($offset){
-        if(isset($_config[$offset])){
-            return $_config[$offset];
+        if(isset($this->_config[$offset])){
+            return $this->_config[$offset];
         }
         return null;
     }
@@ -91,7 +91,8 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->_config[$offset];
+        return isset($this->_config[$offset])?
+            $this->_config[$offset] : null;
     }
 
     /**
