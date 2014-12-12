@@ -114,8 +114,14 @@ class Configurator extends ConfigurationObject
         // Wipe any existing values
         $this->config = [];
 
+        // Load any initial config from adapters
+        foreach($this->fileTypeAdapters as $adapter){
+            $this->merge( $adapter->getPreDirectoryConfig() );
+        }
+
         // Loop through each directory
         foreach ($this->directories as $dir) {
+
             // Handle relative paths
             if (substr($dir, 0, 2) == './') {
                 $dir = $this->getRootPath().substr($dir, 2);
@@ -135,6 +141,12 @@ class Configurator extends ConfigurationObject
                 $this->merge($conf);
             }
         }
+
+        // Load any post config from adapters
+        foreach($this->fileTypeAdapters as $adapter){
+            $this->merge( $adapter->getPostDirectoryConfig() );
+        }
+
     }
 
     /**

@@ -29,7 +29,9 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
      * @param $filePath
      * @return array
      */
-    abstract public function parse($filePath);
+    public function parse($filePath){
+        return [];
+    }
 
     /**
      * Load configuration from a specified directory,
@@ -40,6 +42,11 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
      */
     public function loadFrom($dir)
     {
+        // No glob = no search
+        if(is_null($this->glob)){
+            return [];
+        }
+
         $pattern = $dir.'/'.$this->glob;
         $files = glob($pattern);
 
@@ -50,5 +57,18 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
         }
 
         return $conf;
+    }
+
+
+
+    public function getPreDirectoryConfig()
+    {
+        return [];
+    }
+
+
+    public function getPostDirectoryConfig()
+    {
+        return [];
     }
 }

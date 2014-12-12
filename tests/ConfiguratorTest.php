@@ -286,6 +286,16 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
             ->times(2)
             ->andReturn($arr);
 
+        $adapter
+            ->shouldReceive("getPreDirectoryConfig")
+            ->once()
+            ->andReturn([]);
+
+        $adapter
+            ->shouldReceive("getPostDirectoryConfig")
+            ->once()
+            ->andReturn([]);
+
         $c->addAdapter($adapter);
         $c->load();
     }

@@ -9,14 +9,16 @@ $configurator = new Configurator();
 $configurator
     ->setRootPath(dirname(__FILE__))
     ->setEnvironment("development")
-    ->addDirectory('./config')
-    ->addDirectory('./config/{ENVIRONMENT}');
-
-$configurator
     ->addAdapter(new FileTypeAdapter\ArrayAdapter())
     ->addAdapter(new FileTypeAdapter\JsonAdapter())
     ->addAdapter(new FileTypeAdapter\IniAdapter())
     ->addAdapter(new FileTypeAdapter\YamlAdapter());
+
+
+$configurator
+    ->addDirectory('./config')
+    ->addDirectory('./config/{ENVIRONMENT}');
+
 
 $configurator->load();
 

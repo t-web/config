@@ -42,6 +42,7 @@ class JsonAdapter extends AbstractAdapter
      */
     protected $glob = '*.json';
 
+
     /**
      * @param $filePath
      * @return array
@@ -50,4 +51,8 @@ class JsonAdapter extends AbstractAdapter
     {
         return json_decode(file_get_contents($filePath), true);
     }
+
+
+
+
 }
