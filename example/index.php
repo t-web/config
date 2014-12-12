@@ -4,7 +4,14 @@ use Slender\Configurator\FileTypeAdapter;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-$configurator = new Configurator();
+
+$start = microtime(true);
+
+$configurator = new \Slender\Configurator\SerializedFileCacheConfigurator(
+    dirname(__FILE__).'/config.cache'
+);
+
+
 
 $configurator
     ->setRootPath(dirname(__FILE__))
@@ -17,9 +24,11 @@ $configurator
 
 $configurator
     ->addDirectory('./config')
-    ->addDirectory('./config/{ENVIRONMENT}');
+    ->addDirectory('./config/{ENVIRONMENT}')
+    ->finalize();
 
 
-$configurator->load();
+$totalTime = microtime(true) - $start;
+echo "Configuration loaded in {$totalTime}s\n";
 
 print_r($configurator->toArray());

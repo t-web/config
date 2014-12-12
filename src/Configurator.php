@@ -31,6 +31,7 @@
  */
 namespace Slender\Configurator;
 
+use Slender\Configurator\Interfaces\ConfiguratorInterface;
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -38,6 +39,7 @@ use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
  * @package Slender\Configurator
  */
 class Configurator extends ConfigurationObject
+    implements ConfiguratorInterface
 {
     /**
      * @var string
@@ -77,6 +79,19 @@ class Configurator extends ConfigurationObject
     }
 
     /**
+     * @param  FileTypeAdapterInterface $adapter
+     * @return $this
+     */
+    public function addAdapter(FileTypeAdapterInterface $adapter)
+    {
+        if (!in_array($adapter, $this->fileTypeAdapters)) {
+            $this->fileTypeAdapters[] = $adapter;
+        }
+        return $this;
+    }
+
+
+    /**
      * Add a source directory
      *
      * @param $dir
@@ -89,21 +104,28 @@ class Configurator extends ConfigurationObject
             $this->directories[] = $dir;
         }
 
-        return $this;
-    }
+        // Handle relative paths
+        if (substr($dir, 0, 2) == './') {
+            $dir = $this->getRootPath().substr($dir, 2);
+        }
 
-    /**
-     * @param  FileTypeAdapterInterface $adapter
-     * @return $this
-     */
-    public function addAdapter(FileTypeAdapterInterface $adapter)
-    {
-        if (!in_array($adapter, $this->fileTypeAdapters)) {
-            $this->fileTypeAdapters[] = $adapter;
+        // Expand any placeholders
+        $dir = self::replacePlaceholders($dir, [
+            'ENVIRONMENT' => $this->getEnvironment()
+        ]);
+
+        // Remove any trailing slashes from dir
+        $dir = rtrim($dir, '/');
+
+        // Pass to each fileadapter in turn
+        foreach ($this->fileTypeAdapters as $adapter) {
+            $conf = $adapter->loadFrom($dir);
+            $this->merge($conf);
         }
 
         return $this;
     }
+
 
     /**
      * Wipe the config and load it all again
@@ -151,8 +173,9 @@ class Configurator extends ConfigurationObject
 
     /**
      * @param array $conf
+     * @return $this
      */
-    public function merge(array $conf = array())
+    public function merge($conf = [])
     {
         $appConfig = &$this->config;
         // Iterate through new top-level keys
@@ -244,4 +267,6 @@ class Configurator extends ConfigurationObject
 
         return $str;
     }
+
+    public function finalize(){}
 }
