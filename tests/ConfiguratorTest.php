@@ -1,7 +1,7 @@
 <?php
 
 use Mockery as m;
-use Slender\Configurator\Configurator;
+use Slender\Configurator\Config;
 
 /**
  * Class ConfiguratorTest
@@ -22,7 +22,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     {
         $ENV = 'my_env';
 
-        $c = new Configurator();
+        $c = new Config();
         $c->setEnvironment($ENV);
 
         $refP = new \ReflectionProperty(get_class($c), 'environment');
@@ -37,7 +37,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEnvironment()
     {
-        $c = new Configurator();
+        $c = new Config();
         $ENV = 'My_ENV';
 
         $refP = new \ReflectionProperty(get_class($c), 'environment');
@@ -52,7 +52,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetRootPath()
     {
-        $c = new Configurator();
+        $c = new Config();
         $PATH = '/path/to/dir/';
 
         $c->setRootPath($PATH);
@@ -69,7 +69,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetRootPathAddsTrailingSlash()
     {
-        $c = new Configurator();
+        $c = new Config();
         $PATH = '/path/to/dir';
 
         $c->setRootPath($PATH);
@@ -86,7 +86,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRootPath()
     {
-        $c = new Configurator();
+        $c = new Config();
         $PATH = '/path/to/dir';
 
         $refP = new \ReflectionProperty(get_class($c), 'rootPath');
@@ -101,7 +101,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectory()
     {
-        $c = new Configurator();
+        $c = new Config();
         $DIR = "/path/to/dir";
 
         $returned = $c->addDirectory($DIR);
@@ -120,7 +120,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectoryPreventsDuplicates()
     {
-        $c = new Configurator();
+        $c = new Config();
         $DIR = "/path/to/dir";
 
         $c->addDirectory($DIR);
@@ -139,7 +139,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddAdapter()
     {
-        $c = new Configurator();
+        $c = new Config();
         $adapter = m::mock('\Slender\Configurator\FileTypeAdapter\ArrayAdapter');
 
         $returned = $c->addAdapter($adapter);
@@ -158,7 +158,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $string = "/foo/{BAR}";
         $bar = "baz";
 
-        $value = Configurator::replacePlaceholders($string, [
+        $value = Config::replacePlaceholders($string, [
             'BAR' => $bar
         ]);
 
@@ -167,7 +167,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWhenEmpty()
     {
-        $c = new Configurator();
+        $c = new Config();
         $arr = [
             'foo' => 'bar',
         ];
@@ -186,7 +186,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWhenNotEmpty()
     {
-        $c = new Configurator();
+        $c = new Config();
         $arr = [
             'foo' => 'bar',
         ];
@@ -210,7 +210,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeOverwritesScalarValues()
     {
-        $c = new Configurator();
+        $c = new Config();
         $arr = [
             'foo' => 'success',
         ];
@@ -232,7 +232,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeMergesArrayValues()
     {
-        $c = new Configurator();
+        $c = new Config();
         $arr = [
             'foo' => [3, 4],
         ];
@@ -254,7 +254,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
     public function testToArrayWorks()
     {
-        $c = new Configurator();
+        $c = new Config();
         $arr = [
             'foo' => [1, 2],
             'baz' => 123,

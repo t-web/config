@@ -32,7 +32,7 @@
 namespace Slender\Configurator\Interfaces;
 
 
-interface ConfiguratorInterface
+interface ConfigInterface
 {
     /**
      * Set the root directory for relative paths

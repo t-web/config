@@ -32,7 +32,7 @@
 namespace Slender\Configurator;
 
 use Slender\Configurator\Interfaces\CacheHandlerInterface;
-use Slender\Configurator\Interfaces\ConfiguratorInterface;
+use Slender\Configurator\Interfaces\ConfigInterface;
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -40,8 +40,8 @@ use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
  *
  * @package Slender\Configurator
  */
-class Configurator extends ConfigurationObject
-    implements ConfiguratorInterface
+class Config extends ConfigurationObject
+    implements ConfigInterface
 {
     /**
      * @var string
@@ -57,13 +57,6 @@ class Configurator extends ConfigurationObject
      * @var string[]
      */
     private $directories = [];
-
-    /**
-     * Tracks the first load() call
-     *
-     * @var bool
-     */
-    protected $initialLoadDone = false;
 
     /**
      * @var FileTypeAdapterInterface[]
@@ -90,7 +83,6 @@ class Configurator extends ConfigurationObject
         $this->setCacheHandler($cacheHandler);
     }
 
-
     /**
      * @param  FileTypeAdapterInterface $adapter
      * @return $this
@@ -102,8 +94,7 @@ class Configurator extends ConfigurationObject
         }
         return $this;
     }
-
-
+    
     /**
      * Add a source directory
      *
@@ -142,8 +133,7 @@ class Configurator extends ConfigurationObject
 
         return $this;
     }
-
-
+    
     /**
      * Sets a cache handler, and loads the cached
      * values from it, merging them into config.
@@ -171,8 +161,7 @@ class Configurator extends ConfigurationObject
 
         return $this;
     }
-
-
+    
     /**
      * Finalize the configuration.
      *
@@ -199,24 +188,7 @@ class Configurator extends ConfigurationObject
      */
     public function merge(array $conf = [])
     {
-        $appConfig = &$this->config;
-        // Iterate through new top-level keys
-        foreach ($conf as $key => $value) {
-            // If doesnt exist yet, create it
-            if (!isset($appConfig[$key])) {
-                $appConfig[$key] = $value;
-                continue;
-            }
-            // If it exists, and is already an array
-            if (is_array($appConfig[$key])) {
-                $mergedArray = array_merge_recursive($appConfig[$key], $value);
-                $appConfig[$key] = $mergedArray;
-                continue;
-            }
-            //@TODO check for iterators?
-            // Just set the value already!
-            $appConfig[$key] = $value;
-        }
+        $this->config = self::mergeArrays($this->config, $conf);
     }
 
     /**
@@ -290,7 +262,6 @@ class Configurator extends ConfigurationObject
         return $str;
     }
 
-
     /**
      * @return CacheHandlerInterface
      */
@@ -298,9 +269,33 @@ class Configurator extends ConfigurationObject
     {
         return $this->cacheHandler;
     }
+    
+    public static function mergeArrays( $arr1, $arr2)
+    {
+        $merged = array_merge([],$arr1);
 
+        // Iterate through new top-level keys
+        foreach ($arr2 as $key => $value) {
+            // If doesn't exist yet, create it
+            if (!isset($merged[$key])) {
+                $merged[$key] = $value;
+                continue;
+            }
+            // If it exists, and is already an array
+            if (is_array($merged[$key])) {
+                if(is_numeric(array_keys($value)[0])){
+                    // Append
+                    $merged[$key] = array_merge_recursive($merged[$key],$value);
+                } else {
+                    $merged[$key] = self::mergeArrays($merged[$key], $value);
+                }
+                continue;
+            }
+            //@TODO check for iterators?
+            // Just set the value already!
+            $merged[$key] = $value;
+        }
 
+        return $merged;
+    }
 }
-
-
-
