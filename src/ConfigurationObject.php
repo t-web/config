@@ -91,7 +91,8 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return $this->config[$offset];
+        return isset($this->config[$offset])?
+            $this->config[$offset] : null;
     }
 
     /**
