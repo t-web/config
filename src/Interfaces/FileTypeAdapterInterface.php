@@ -47,23 +47,4 @@ interface FileTypeAdapterInterface
     public function loadFrom($dir);
 
 
-    /**
-     * Returns a configuration array that
-     * is loaded *before* looking in directories
-     *
-     * @return array
-     */
-    public function getPreDirectoryConfig();
-
-
-    /**
-     * Returns a configuration array that
-     * is loaded *after* looking in directories
-     *
-     * @return array
-     */
-    public function getPostDirectoryConfig();
-
-
-
 }
