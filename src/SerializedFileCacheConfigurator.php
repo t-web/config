@@ -60,9 +60,12 @@ class SerializedFileCacheConfigurator extends Configurator
      */
     public function finalize()
     {
-        if(!$this->loadedFromCache && $this->cacheFilePath){
+        if(!$this->loadedFromCache){
             file_put_contents($this->cacheFilePath,
                 serialize($this->toArray()));
+        } else {
+            // Reset cache flag to allow new directories to be added
+            $this->loadedFromCache = false;
         }
     }
 }
