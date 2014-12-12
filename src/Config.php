@@ -32,7 +32,7 @@
 namespace Slender\Configurator;
 
 use Slender\Configurator\Interfaces\CacheHandlerInterface;
-use Slender\Configurator\Interfaces\ConfiguratorInterface;
+use Slender\Configurator\Interfaces\ConfigInterface;
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -40,8 +40,8 @@ use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
  *
  * @package Slender\Configurator
  */
-class Configurator extends ConfigurationObject
-    implements ConfiguratorInterface
+class Config extends ConfigurationObject
+    implements ConfigInterface
 {
     /**
      * @var string
@@ -59,13 +59,6 @@ class Configurator extends ConfigurationObject
     private $directories = [];
 
     /**
-     * Tracks the first load() call
-     *
-     * @var bool
-     */
-    protected $initialLoadDone = false;
-
-    /**
      * @var FileTypeAdapterInterface[]
      */
     protected $fileTypeAdapters = [];
@@ -79,6 +72,7 @@ class Configurator extends ConfigurationObject
      */
     protected $wasLoadedFromCache = false;
 
+
     /**
      * @param null $rootPath
      * @param null $env
@@ -89,7 +83,6 @@ class Configurator extends ConfigurationObject
         $this->setEnvironment($env);
         $this->setCacheHandler($cacheHandler);
     }
-
 
 
     /**
@@ -114,7 +107,8 @@ class Configurator extends ConfigurationObject
     public function addDirectory($dir)
     {
         // Have we already loaded a cached version?
-        if(! $this->wasLoadedFromCache){
+        if (!$this->wasLoadedFromCache) {
+
 
             // Avoid duplicates
             if (!in_array($dir, $this->directories)) {
@@ -162,9 +156,9 @@ class Configurator extends ConfigurationObject
         $this->cacheHandler = $cacheHandler;
 
         // If a real handler, load the cache
-        if(!is_null($this->cacheHandler)){
+        if (!is_null($this->cacheHandler)) {
             $cachedConf = $this->cacheHandler->loadCache();
-            if(!empty($cachedConf)){
+            if (!empty($cachedConf)) {
                 $this->merge($this->cacheHandler->loadCache());
                 $this->wasLoadedFromCache = true;
             }
@@ -172,7 +166,6 @@ class Configurator extends ConfigurationObject
 
         return $this;
     }
-
 
 
     /**
@@ -187,12 +180,14 @@ class Configurator extends ConfigurationObject
      *       _won't_ be cached. Useful for runtime-specific
      *       configuration overrides.
      */
-    public function finalize(){
-        if(!is_null($this->cacheHandler)){
+    public function finalize()
+    {
+        if (!is_null($this->cacheHandler)) {
             $this->cacheHandler->saveCache($this->toArray());
         }
         $this->wasLoadedFromCache = false;
     }
+
 
     /**
      * @param array $conf
@@ -200,25 +195,9 @@ class Configurator extends ConfigurationObject
      */
     public function merge(array $conf = [])
     {
-        $appConfig = &$this->config;
-        // Iterate through new top-level keys
-        foreach ($conf as $key => $value) {
-            // If doesnt exist yet, create it
-            if (!isset($appConfig[$key])) {
-                $appConfig[$key] = $value;
-                continue;
-            }
-            // If it exists, and is already an array
-            if (is_array($appConfig[$key])) {
-                $mergedArray = array_merge_recursive($appConfig[$key], $value);
-                $appConfig[$key] = $mergedArray;
-                continue;
-            }
-            //@TODO check for iterators?
-            // Just set the value already!
-            $appConfig[$key] = $value;
-        }
+        $this->config = self::mergeArrays($this->config, $conf);
     }
+
 
     /**
      * @return array
@@ -227,6 +206,7 @@ class Configurator extends ConfigurationObject
     {
         return $this->config;
     }
+
 
     /**
      * Get the currently defined environment
@@ -237,6 +217,7 @@ class Configurator extends ConfigurationObject
     {
         return $this->environment;
     }
+
 
     /**
      * Set the enviroment name
@@ -251,6 +232,7 @@ class Configurator extends ConfigurationObject
         return $this;
     }
 
+
     /**
      * Get the defined root path for relative urls
      *
@@ -261,6 +243,7 @@ class Configurator extends ConfigurationObject
         return $this->rootPath;
     }
 
+
     /**
      * Set the root path for relative urls
      *
@@ -269,10 +252,11 @@ class Configurator extends ConfigurationObject
      */
     public function setRootPath($rootPath)
     {
-        $this->rootPath = rtrim($rootPath, '/').'/';
+        $this->rootPath = rtrim($rootPath, '/') . '/';
 
         return $this;
     }
+
 
     /**
      * Utility method to replace placeholders in a string
@@ -284,17 +268,12 @@ class Configurator extends ConfigurationObject
     public static function replacePlaceholders($str, $params = [])
     {
         foreach ($params as $key => $value) {
-            $key = '{'.$key.'}';
+            $key = '{' . $key . '}';
             $str = str_replace($key, $value, $str);
         }
 
         return $str;
     }
-
-
-
-
-
 
 
     /**
@@ -307,6 +286,35 @@ class Configurator extends ConfigurationObject
 
 
 
+
+    public static function mergeArrays( $arr1, $arr2)
+    {
+        $merged = array_merge([],$arr1);
+
+        // Iterate through new top-level keys
+        foreach ($arr2 as $key => $value) {
+            // If doesn't exist yet, create it
+            if (!isset($merged[$key])) {
+                $merged[$key] = $value;
+                continue;
+            }
+            // If it exists, and is already an array
+            if (is_array($merged[$key])) {
+                if(is_numeric(array_keys($value)[0])){
+                    // Append
+                    $merged[$key] = array_merge_recursive($merged[$key],$value);
+                } else {
+                    $merged[$key] = self::mergeArrays($merged[$key], $value);
+                }
+                continue;
+            }
+            //@TODO check for iterators?
+            // Just set the value already!
+            $merged[$key] = $value;
+        }
+
+        return $merged;
+    }
 
 }
 
