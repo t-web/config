@@ -6,7 +6,7 @@ use Slender\Configurator\Config;
 /**
  * Class ConfiguratorTest
  * @package Slender\Configurator
- * @covers Slender\Configurator\Configurator
+ * @covers Slender\Configurator\Config
  */
 class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -97,7 +97,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Slender\Configurator\Configurator::addDirectory()
+     * @covers Slender\Configurator\Config::addDirectory()
      */
     public function testAddDirectory()
     {
