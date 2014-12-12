@@ -21,7 +21,7 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
     public function __construct($recursive = false)
     {
         if ($recursive) {
-            $this->glob = "**/".$this->glob;
+            $this->glob = "**/" . $this->glob;
         }
     }
 
@@ -29,7 +29,8 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
      * @param $filePath
      * @return array
      */
-    public function parse($filePath){
+    public function parse($filePath)
+    {
         return [];
     }
 
@@ -43,11 +44,11 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
     public function loadFrom($dir)
     {
         // No glob = no search
-        if(is_null($this->glob)){
+        if (is_null($this->glob)) {
             return [];
         }
 
-        $pattern = $dir.'/'.$this->glob;
+        $pattern = $dir . '/' . $this->glob;
         $files = glob($pattern);
 
         $conf = [];
@@ -58,7 +59,6 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
 
         return $conf;
     }
-
 
 
     public function getPreDirectoryConfig()

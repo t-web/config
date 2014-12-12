@@ -51,8 +51,4 @@ class JsonAdapter extends AbstractAdapter
     {
         return json_decode(file_get_contents($filePath), true);
     }
-
-
-
-
 }

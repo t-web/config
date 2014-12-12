@@ -46,17 +46,36 @@ class ConfigurationObject implements \ArrayAccess
     // Object Property Access
     //////////////////////////////////////////////////////////////////
 
+    public function get($offset, $default = null)
+    {
+        if (!$this->has($offset)) {
+            return $default;
+        }
+        return $this->config[$offset];
+    }
+
+    public function has($offset)
+    {
+        return isset($this->config[$offset]);
+    }
+
+    public function set($offset, $value)
+    {
+        $this->config[$offset] = $value;
+    }
+
+    public function remove($offset)
+    {
+        unset($this->config[$offset]);
+    }
+
     /**
      * @param $offset
      * @return null
      */
     public function __get($offset)
     {
-        if (isset($this->config[$offset])) {
-            return $this->config[$offset];
-        }
-
-        return;
+        return $this->get($offset);
     }
 
     //////////////////////////////////////////////////////////////////
@@ -66,7 +85,7 @@ class ConfigurationObject implements \ArrayAccess
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     * @param  mixed   $offset <p>
+     * @param  mixed $offset <p>
      *                         An offset to check for.
      *                         </p>
      * @return boolean true on success or false on failure.
@@ -76,7 +95,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetExists($offset)
     {
-        return isset($this->config[$offset]);
+        return $this->has($offset);
     }
 
     /**
@@ -90,8 +109,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetGet($offset)
     {
-        return isset($this->config[$offset]) ?
-            $this->config[$offset] : null;
+        return $this->get($offset);
     }
 
     /**
@@ -101,14 +119,14 @@ class ConfigurationObject implements \ArrayAccess
      * @param  mixed $offset <p>
      *                       The offset to assign the value to.
      *                       </p>
-     * @param  mixed $value  <p>
+     * @param  mixed $value <p>
      *                       The value to set.
      *                       </p>
      * @return void
      */
     public function offsetSet($offset, $value)
     {
-        $this->config[$offset] = $value;
+        $this->set($offset, $value);
     }
 
     /**
@@ -122,6 +140,6 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        unset($this->config[$offset]);
+        $this->remove($offset);
     }
 }

@@ -91,7 +91,6 @@ class Configurator extends ConfigurationObject
     }
 
 
-
     /**
      * @param  FileTypeAdapterInterface $adapter
      * @return $this
@@ -114,7 +113,7 @@ class Configurator extends ConfigurationObject
     public function addDirectory($dir)
     {
         // Have we already loaded a cached version?
-        if(! $this->wasLoadedFromCache){
+        if (!$this->wasLoadedFromCache) {
 
             // Avoid duplicates
             if (!in_array($dir, $this->directories)) {
@@ -162,9 +161,9 @@ class Configurator extends ConfigurationObject
         $this->cacheHandler = $cacheHandler;
 
         // If a real handler, load the cache
-        if(!is_null($this->cacheHandler)){
+        if (!is_null($this->cacheHandler)) {
             $cachedConf = $this->cacheHandler->loadCache();
-            if(!empty($cachedConf)){
+            if (!empty($cachedConf)) {
                 $this->merge($this->cacheHandler->loadCache());
                 $this->wasLoadedFromCache = true;
             }
@@ -172,7 +171,6 @@ class Configurator extends ConfigurationObject
 
         return $this;
     }
-
 
 
     /**
@@ -187,8 +185,9 @@ class Configurator extends ConfigurationObject
      *       _won't_ be cached. Useful for runtime-specific
      *       configuration overrides.
      */
-    public function finalize(){
-        if(!is_null($this->cacheHandler)){
+    public function finalize()
+    {
+        if (!is_null($this->cacheHandler)) {
             $this->cacheHandler->saveCache($this->toArray());
         }
         $this->wasLoadedFromCache = false;
@@ -269,7 +268,7 @@ class Configurator extends ConfigurationObject
      */
     public function setRootPath($rootPath)
     {
-        $this->rootPath = rtrim($rootPath, '/').'/';
+        $this->rootPath = rtrim($rootPath, '/') . '/';
 
         return $this;
     }
@@ -284,17 +283,12 @@ class Configurator extends ConfigurationObject
     public static function replacePlaceholders($str, $params = [])
     {
         foreach ($params as $key => $value) {
-            $key = '{'.$key.'}';
+            $key = '{' . $key . '}';
             $str = str_replace($key, $value, $str);
         }
 
         return $str;
     }
-
-
-
-
-
 
 
     /**
@@ -304,8 +298,6 @@ class Configurator extends ConfigurationObject
     {
         return $this->cacheHandler;
     }
-
-
 
 
 }

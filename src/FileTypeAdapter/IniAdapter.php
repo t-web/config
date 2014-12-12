@@ -40,11 +40,11 @@ class IniAdapter extends AbstractAdapter
 {
     /**
      * @param string $ext
-     * @param bool   $recursive
+     * @param bool $recursive
      */
     public function __construct($ext = 'ini', $recursive = false)
     {
-        $this->glob = '*.'.$ext;
+        $this->glob = '*.' . $ext;
         parent::__construct($recursive);
     }
 
