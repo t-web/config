@@ -6,6 +6,19 @@ php:
   - 5.6
   - hhvm
 
-before_script: composer install
+before_install:
+  - sudo apt-get update -qq
 
-script: phpunit --coverage-text
+install:
+  - sudo apt-get install -y  git-core php5-curl -qq
+
+before_script:
+ - wget http://getcomposer.org/composer.phar
+ - php composer.phar install --dev --no-interaction
+ - mkdir -p build/logs
+
+script:
+ - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+ - vendor/bin/coveralls -v
