@@ -4,7 +4,6 @@ use Slender\Configurator\FileTypeAdapter;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-
 $configurator = new Configurator();
 
 $configurator
@@ -19,10 +18,6 @@ $configurator
     ->addAdapter(new FileTypeAdapter\IniAdapter())
     ->addAdapter(new FileTypeAdapter\YamlAdapter());
 
-
-
-
 $configurator->load();
-
 
 print_r($configurator->toArray());

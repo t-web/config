@@ -31,8 +31,6 @@
  */
 namespace Slender\Configurator;
 
-
-
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -51,12 +49,10 @@ class Configurator extends ConfigurationObject
      */
     private $environment;
 
-
     /**
      * @var string[]
      */
     private $directories = [];
-
 
     /**
      * Tracks the first load() call
@@ -65,12 +61,10 @@ class Configurator extends ConfigurationObject
      */
     protected $initialLoadDone = false;
 
-
     /**
      * @var FileTypeAdapterInterface[]
      */
     protected $fileTypeAdapters = [];
-
 
     /**
      * @param null $rootPath
@@ -81,8 +75,6 @@ class Configurator extends ConfigurationObject
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
     }
-
-
 
     /**
      * Add a source directory
@@ -96,12 +88,12 @@ class Configurator extends ConfigurationObject
         if (!in_array($dir, $this->directories)) {
             $this->directories[] = $dir;
         }
+
         return $this;
     }
 
-
     /**
-     * @param FileTypeAdapterInterface $adapter
+     * @param  FileTypeAdapterInterface $adapter
      * @return $this
      */
     public function addAdapter(FileTypeAdapterInterface $adapter)
@@ -112,7 +104,6 @@ class Configurator extends ConfigurationObject
 
         return $this;
     }
-
 
     /**
      * Wipe the config and load it all again
@@ -127,7 +118,7 @@ class Configurator extends ConfigurationObject
         foreach ($this->directories as $dir) {
             // Handle relative paths
             if (substr($dir, 0, 2) == './') {
-                $dir = $this->getRootPath() . substr($dir, 2);
+                $dir = $this->getRootPath().substr($dir, 2);
             }
 
             // Expand any placeholders
@@ -145,7 +136,6 @@ class Configurator extends ConfigurationObject
             }
         }
     }
-
 
     /**
      * @param array $conf
@@ -172,7 +162,6 @@ class Configurator extends ConfigurationObject
         }
     }
 
-
     /**
      * @return array
      */
@@ -180,7 +169,6 @@ class Configurator extends ConfigurationObject
     {
         return $this->config;
     }
-
 
     /**
      * Get the currently defined environment
@@ -195,12 +183,13 @@ class Configurator extends ConfigurationObject
     /**
      * Set the enviroment name
      *
-     * @param mixed $environment
+     * @param  mixed $environment
      * @return $this
      */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
+
         return $this;
     }
 
@@ -217,29 +206,30 @@ class Configurator extends ConfigurationObject
     /**
      * Set the root path for relative urls
      *
-     * @param string $rootPath
+     * @param  string $rootPath
      * @return $this
      */
     public function setRootPath($rootPath)
     {
-        $this->rootPath = rtrim($rootPath, '/') . '/';
+        $this->rootPath = rtrim($rootPath, '/').'/';
+
         return $this;
     }
-
 
     /**
      * Utility method to replace placeholders in a string
      *
      * @param $str
-     * @param array $params
+     * @param  array $params
      * @return mixed
      */
     public static function replacePlaceholders($str, $params = [])
     {
         foreach ($params as $key => $value) {
-            $key = '{' . $key . '}';
+            $key = '{'.$key.'}';
             $str = str_replace($key, $value, $str);
         }
+
         return $str;
     }
-} 
+}

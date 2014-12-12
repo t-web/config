@@ -42,7 +42,6 @@ class ArrayAdapter extends AbstractAdapter
      */
     protected $glob = '*.php';
 
-
     /**
      * @param $filePath
      * @return array

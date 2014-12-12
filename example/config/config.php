@@ -4,6 +4,6 @@ return [
     'modules' => [
         'A',
         'B',
-        'C'
+        'C',
     ]
 ];

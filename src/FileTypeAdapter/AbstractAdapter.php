@@ -21,7 +21,7 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
     public function __construct($recursive = false)
     {
         if ($recursive) {
-            $this->glob = "**/" . $this->glob;
+            $this->glob = "**/".$this->glob;
         }
     }
 
@@ -35,12 +35,12 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
      * Load configuration from a specified directory,
      * and return it as a nested array
      *
-     * @param string $dir Directory to load from
-     * @return array    The configuration
+     * @param  string $dir Directory to load from
+     * @return array  The configuration
      */
     public function loadFrom($dir)
     {
-        $pattern = $dir . '/' . $this->glob;
+        $pattern = $dir.'/'.$this->glob;
         $files = glob($pattern);
 
         $conf = [];

@@ -33,7 +33,6 @@ namespace Slender\Configurator\FileTypeAdapter;
 
 use Symfony\Component\Yaml\Yaml as YamlParser;
 
-
 /**
  * Class YamlAdapter
  * @package Slender\Configurator\FileTypeAdapter
