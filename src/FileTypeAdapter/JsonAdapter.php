@@ -31,56 +31,23 @@
  */
 namespace Slender\Configurator\FileTypeAdapter;
 
-use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
-use Symfony\Component\Yaml\Yaml as YamlParser;
-
-
 /**
- * Class YAML
+ * Class JsonAdapter
  * @package Slender\Configurator\FileTypeAdapter
  */
-class YAML implements FileTypeAdapterInterface
+class JsonAdapter extends AbstractAdapter
 {
     /**
      * @var string
      */
-    private $glob = '*.yml';
-
-
-    /**
-     * @param bool $recursive
-     */
-    public function __construct( $recursive = false )
-    {
-        if($recursive){
-            $this->glob = "**/*.yml";
-        }
-    }
-
+    protected $glob = '*.json';
 
     /**
-     * Load configuration from a specified directory,
-     * and return it as a nested array
-     *
-     * @param string $dir Directory to load from
-     * @return array    The configuration
+     * @param $filePath
+     * @return array
      */
-    public function loadFrom($dir)
+    public function parse($filePath)
     {
-        $pattern = $dir.'/'.$this->glob;
-        $files = glob($pattern);
-
-        $conf = [];
-
-        foreach($files as $filePath){
-            $arr = YamlParser::parse(file_get_contents($filePath));
-            $conf = array_merge_recursive($conf, $arr );
-        }
-
-
-        return $conf;
+        return json_decode(file_get_contents($filePath), true);
     }
-
-
-
 }

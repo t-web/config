@@ -31,7 +31,6 @@
  */
 namespace Slender\Configurator\Interfaces;
 
-
 /**
  * Interface FileTypeAdapterInterface
  * @package Slender\Configurator\Interfaces
@@ -42,9 +41,8 @@ interface FileTypeAdapterInterface
      * Load configuration from a specified directory,
      * and return it as a nested array
      *
-     * @param string $dir  Directory to load from
-     * @return array    The configuration
+     * @param  string $dir Directory to load from
+     * @return array  The configuration
      */
     public function loadFrom($dir);
-
-} 
+}

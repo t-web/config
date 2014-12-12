@@ -3,7 +3,6 @@
 use Mockery as m;
 use Slender\Configurator\Configurator;
 
-
 /**
  * Class ConfiguratorTest
  * @package Slender\Configurator
@@ -11,20 +10,16 @@ use Slender\Configurator\Configurator;
  */
 class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 {
-
-
     public function tearDown()
     {
         m::close();
     }
-
 
     /**
      *
      */
     public function testSetEnvironment()
     {
-
         $ENV = 'my_env';
 
         $c = new Configurator();
@@ -37,13 +32,11 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($ENV, $value);
     }
 
-
     /**
      *
      */
     public function testGetEnvironment()
     {
-
         $c = new Configurator();
         $ENV = 'My_ENV';
 
@@ -53,7 +46,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($ENV, $c->getEnvironment());
     }
-
 
     /**
      *
@@ -72,7 +64,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($PATH, $value);
     }
 
-
     /**
      *
      */
@@ -87,7 +78,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $refP->setAccessible(true);
         $value = $refP->getValue($c);
 
-        $this->assertEquals($PATH . '/', $value);
+        $this->assertEquals($PATH.'/', $value);
     }
 
     /**
@@ -104,7 +95,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($PATH, $c->getRootPath());
     }
-
 
     /**
      * @covers Slender\Configurator\Configurator::addDirectory()
@@ -123,7 +113,6 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
         $this->assertEquals($c, $returned);
-
     }
 
     /**
@@ -143,9 +132,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
-
     }
-
 
     /**
      *
@@ -153,7 +140,7 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
     public function testAddAdapter()
     {
         $c = new Configurator();
-        $adapter = m::mock('\Slender\Configurator\FileTypeAdapter\PHP');
+        $adapter = m::mock('\Slender\Configurator\FileTypeAdapter\ArrayAdapter');
 
         $returned = $c->addAdapter($adapter);
 
@@ -164,157 +151,142 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($adapters));
         $this->assertEquals($adapter, $adapters[0]);
         $this->assertEquals($c, $returned);
-
     }
-
 
     public function testReplacePlaceholders()
     {
         $string = "/foo/{BAR}";
         $bar = "baz";
 
-        $value = Configurator::replacePlaceholders($string,[
+        $value = Configurator::replacePlaceholders($string, [
             'BAR' => $bar
         ]);
 
-        $this->assertEquals("/foo/baz",$value);
+        $this->assertEquals("/foo/baz", $value);
     }
 
-
-
-    public function testMergeWhenEmpty(){
+    public function testMergeWhenEmpty()
+    {
         $c = new Configurator();
         $arr = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
         $c->merge($arr);
-        $refP = new \ReflectionProperty(get_class($c), '_config');
+        $refP = new \ReflectionProperty(get_class($c), 'config');
         $refP->setAccessible(true);
 
         $value = $refP->getValue($c);
 
-        $this->assertInternalType('array',$value);
-        $this->assertArrayHasKey('foo',$value);
+        $this->assertInternalType('array', $value);
+        $this->assertArrayHasKey('foo', $value);
         $this->assertEquals('bar', $value['foo']);
-        $this->assertEquals($arr,$value);
-
-
+        $this->assertEquals($arr, $value);
     }
 
-
-    public function testMergeWhenNotEmpty(){
+    public function testMergeWhenNotEmpty()
+    {
         $c = new Configurator();
         $arr = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), '_config');
+        $refP = new \ReflectionProperty(get_class($c), 'config');
         $refP->setAccessible(true);
-        $refP->setValue($c,[
+        $refP->setValue($c, [
             'baz' => 'fwibble'
         ]);
 
         $c->merge($arr);
         $value = $refP->getValue($c);
 
-        $this->assertInternalType('array',$value);
-        $this->assertArrayHasKey('foo',$value);
+        $this->assertInternalType('array', $value);
+        $this->assertArrayHasKey('foo', $value);
         $this->assertEquals('bar', $value['foo']);
-        $this->assertArrayHasKey('baz',$value);
+        $this->assertArrayHasKey('baz', $value);
         $this->assertEquals('fwibble', $value['baz']);
-        $this->assertEquals(['foo'=>'bar','baz'=>'fwibble'],$value);
-
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'fwibble'], $value);
     }
 
-
-    public function testMergeOverwritesScalarValues(){
+    public function testMergeOverwritesScalarValues()
+    {
         $c = new Configurator();
         $arr = [
-            'foo' => 'success'
+            'foo' => 'success',
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), '_config');
+        $refP = new \ReflectionProperty(get_class($c), 'config');
         $refP->setAccessible(true);
-        $refP->setValue($c,[
+        $refP->setValue($c, [
             'foo' => 'fail'
         ]);
 
         $c->merge($arr);
         $value = $refP->getValue($c);
 
-        $this->assertInternalType('array',$value);
-        $this->assertArrayHasKey('foo',$value);
+        $this->assertInternalType('array', $value);
+        $this->assertArrayHasKey('foo', $value);
         $this->assertEquals('success', $value['foo']);
-        $this->assertEquals(['foo'=>'success'], $value);
-
+        $this->assertEquals(['foo' => 'success'], $value);
     }
 
-
-    public function testMergeMergesArrayValues(){
+    public function testMergeMergesArrayValues()
+    {
         $c = new Configurator();
         $arr = [
-            'foo' => [ 3,4 ]
+            'foo' => [3, 4],
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), '_config');
+        $refP = new \ReflectionProperty(get_class($c), 'config');
         $refP->setAccessible(true);
-        $refP->setValue($c,[
-            'foo' => [1,2]
+        $refP->setValue($c, [
+            'foo' => [1, 2]
         ]);
 
         $c->merge($arr);
         $value = $refP->getValue($c);
 
-        $this->assertInternalType('array',$value);
-        $this->assertArrayHasKey('foo',$value);
+        $this->assertInternalType('array', $value);
+        $this->assertArrayHasKey('foo', $value);
         $this->assertCount(4, $value['foo']);
-        $this->assertEquals([1,2,3,4], $value['foo']);
-
+        $this->assertEquals([1, 2, 3, 4], $value['foo']);
     }
 
-
-
-    public function testToArrayWorks(){
+    public function testToArrayWorks()
+    {
         $c = new Configurator();
         $arr = [
-            'foo' => [1,2],
-            'baz' => 123
+            'foo' => [1, 2],
+            'baz' => 123,
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), '_config');
+        $refP = new \ReflectionProperty(get_class($c), 'config');
         $refP->setAccessible(true);
-        $refP->setValue($c,$arr);
-
+        $refP->setValue($c, $arr);
 
         $value = $c->toArray();
 
         $this->assertEquals($arr, $value);
     }
 
-
     /**
      * @covers Slender\Configurator\Configurator::load
      */
-    public function testLoadCallsAdapterMerge(){
-
+    public function testLoadCallsAdapterMerge()
+    {
         $c = new Configurator();
         $c->addDirectory('/foo/bar');
         $c->addDirectory('./foo/bar');
         $arr = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
-        $adapter = m::mock("Slender\\Configurator\\FileTypeAdapter\\PHP");
+        $adapter = m::mock("Slender\\Configurator\\FileTypeAdapter\\ArrayAdapter");
         $adapter->shouldReceive('loadFrom')
             ->times(2)
             ->andReturn($arr);
 
         $c->addAdapter($adapter);
         $c->load();
-
     }
-
-
-
 }

@@ -29,56 +29,31 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 namespace Slender\Configurator\FileTypeAdapter;
 
-use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
-
 /**
- * Class JSON
+ * Class IniAdapter
  * @package Slender\Configurator\FileTypeAdapter
  */
-class JSON implements FileTypeAdapterInterface
+class IniAdapter extends AbstractAdapter
 {
     /**
-     * @var string
+     * @param string $ext
+     * @param bool   $recursive
      */
-    private $glob = '*.json';
-
-
-    /**
-     * @param bool $recursive
-     */
-    public function __construct( $recursive = false )
+    public function __construct($ext = 'ini', $recursive = false)
     {
-        if($recursive){
-            $this->glob = "**/*.json";
-        }
+        $this->glob = '*.'.$ext;
+        parent::__construct($recursive);
     }
 
-
     /**
-     * Load configuration from a specified directory,
-     * and return it as a nested array
-     *
-     * @param string $dir Directory to load from
-     * @return array    The configuration
+     * @param $filePath
+     * @return array
      */
-    public function loadFrom($dir)
+    public function parse($filePath)
     {
-        $pattern = $dir.'/'.$this->glob;
-        $files = glob($pattern);
-
-        $conf = [];
-
-        foreach($files as $filePath){
-            $arr = json_decode(file_get_contents($filePath), true);
-            $conf = array_merge_recursive($conf, $arr );
-        }
-
-
-        return $conf;
+        return parse_ini_file($filePath, true);
     }
-
-
-
 }

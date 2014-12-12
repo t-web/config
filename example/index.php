@@ -4,7 +4,6 @@ use Slender\Configurator\FileTypeAdapter;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-
 $configurator = new Configurator();
 
 $configurator
@@ -14,15 +13,11 @@ $configurator
     ->addDirectory('./config/{ENVIRONMENT}');
 
 $configurator
-    ->addAdapter( new FileTypeAdapter\PHP() )
-    ->addAdapter( new FileTypeAdapter\JSON() )
-    ->addAdapter( new FileTypeAdapter\INI() )
-    ->addAdapter( new FileTypeAdapter\YAML() );
-
-
-
+    ->addAdapter(new FileTypeAdapter\ArrayAdapter())
+    ->addAdapter(new FileTypeAdapter\JsonAdapter())
+    ->addAdapter(new FileTypeAdapter\IniAdapter())
+    ->addAdapter(new FileTypeAdapter\YamlAdapter());
 
 $configurator->load();
-
 
 print_r($configurator->toArray());

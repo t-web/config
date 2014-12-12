@@ -31,8 +31,6 @@
  */
 namespace Slender\Configurator;
 
-
-
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
@@ -51,12 +49,10 @@ class Configurator extends ConfigurationObject
      */
     private $environment;
 
-
     /**
      * @var string[]
      */
     private $directories = [];
-
 
     /**
      * Tracks the first load() call
@@ -65,23 +61,20 @@ class Configurator extends ConfigurationObject
      */
     protected $initialLoadDone = false;
 
-
     /**
      * @var FileTypeAdapterInterface[]
      */
     protected $fileTypeAdapters = [];
 
-
     /**
      * @param null $rootPath
      * @param null $env
      */
-    public function __construct( $rootPath = null, $env = null){
+    public function __construct($rootPath = null, $env = null)
+    {
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
     }
-
-
 
     /**
      * Add a source directory
@@ -89,71 +82,67 @@ class Configurator extends ConfigurationObject
      * @param $dir
      * @return $this
      */
-    public function addDirectory( $dir ){
+    public function addDirectory($dir)
+    {
         // Avoid duplicates
-        if( in_array($dir, $this->directories)){
-            return $this;
+        if (!in_array($dir, $this->directories)) {
+            $this->directories[] = $dir;
         }
-        $this->directories[] = $dir;
 
         return $this;
     }
 
-
     /**
-     * @param FileTypeAdapterInterface $adapter
+     * @param  FileTypeAdapterInterface $adapter
      * @return $this
      */
-    public function addAdapter( FileTypeAdapterInterface $adapter )
+    public function addAdapter(FileTypeAdapterInterface $adapter)
     {
-        if(!in_array($adapter,$this->fileTypeAdapters)) {
+        if (!in_array($adapter, $this->fileTypeAdapters)) {
             $this->fileTypeAdapters[] = $adapter;
         }
 
         return $this;
     }
 
-
-
     /**
      * Wipe the config and load it all again
      *
      */
-    public function load(){
+    public function load()
+    {
         // Wipe any existing values
-        $this->_config = [];
+        $this->config = [];
 
         // Loop through each directory
-        foreach($this->directories as $dir){
-
-
+        foreach ($this->directories as $dir) {
             // Handle relative paths
-            if(substr($dir,0,2) == './'){
-                $dir = $this->getRootPath().substr($dir,2);
+            if (substr($dir, 0, 2) == './') {
+                $dir = $this->getRootPath().substr($dir, 2);
             }
 
             // Expand any placeholders
-            $dir = self::replacePlaceholders($dir,[
+            $dir = self::replacePlaceholders($dir, [
                 'ENVIRONMENT' => $this->getEnvironment()
             ]);
 
             // Remove any trailing slashes from dir
-            $dir = rtrim($dir,'/');
+            $dir = rtrim($dir, '/');
 
             // Pass to each fileadapter in turn
-            foreach($this->fileTypeAdapters as $adapter){
+            foreach ($this->fileTypeAdapters as $adapter) {
                 $conf = $adapter->loadFrom($dir);
                 $this->merge($conf);
             }
         }
     }
 
-
     /**
      * @param array $conf
      */
-    public function merge( array $conf = array() ){
-        $appConfig = &$this->_config;
+    public function merge(array $conf = array())
+    {
+        $appConfig = &$this->config;
         // Iterate through new top-level keys
         foreach ($conf as $key => $value) {
             // If doesnt exist yet, create it
@@ -173,16 +162,13 @@ class Configurator extends ConfigurationObject
         }
     }
 
-
     /**
      * @return array
      */
-    public function toArray(){
-        return $this->_config;
+    public function toArray()
+    {
+        return $this->config;
     }
-
-
-
 
     /**
      * Get the currently defined environment
@@ -197,12 +183,13 @@ class Configurator extends ConfigurationObject
     /**
      * Set the enviroment name
      *
-     * @param mixed $environment
+     * @param  mixed $environment
      * @return $this
      */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
+
         return $this;
     }
 
@@ -219,31 +206,30 @@ class Configurator extends ConfigurationObject
     /**
      * Set the root path for relative urls
      *
-     * @param string $rootPath
+     * @param  string $rootPath
      * @return $this
      */
     public function setRootPath($rootPath)
     {
-        $this->rootPath = rtrim($rootPath,'/').'/';
+        $this->rootPath = rtrim($rootPath, '/').'/';
+
         return $this;
     }
-
 
     /**
      * Utility method to replace placeholders in a string
      *
      * @param $str
-     * @param array $params
+     * @param  array $params
      * @return mixed
      */
     public static function replacePlaceholders($str, $params = [])
     {
-        foreach($params as $key => $value){
+        foreach ($params as $key => $value) {
             $key = '{'.$key.'}';
-            $str = str_replace($key,$value,$str);
+            $str = str_replace($key, $value, $str);
         }
+
         return $str;
     }
-
-
-} 
+}

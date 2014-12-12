@@ -16,17 +16,17 @@ $ENVIRONMENT = 'development';
 //    - passing the optional string $basePath as first argument will allow
 //      using relative paths to folders
 ///////////////////////////////////////////////////////////////////////////////
-$configurator = new Configurator\Configurator( $PROJECT_ROOT, $ENVIRONMENT );
+$configurator = new Configurator\Configurator($PROJECT_ROOT, $ENVIRONMENT);
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Add the adaptors to load the type of files we want
 ///////////////////////////////////////////////////////////////////////////////
 $configurator
-    ->addAdaptor( new FileTypeAdapter\PHP()   )
-    ->addAdaptor( new FileTypeAdapter\JSON()  )
-    ->addAdaptor( new FileTypeAdapter\INI()   )
-    ->addAdaptor( new FileTypeAdapter\YAML()  );
+    ->addAdaptor(new FileTypeAdapter\ArrayAdapter())
+    ->addAdaptor(new FileTypeAdapter\JsonAdapter())
+    ->addAdaptor(new FileTypeAdapter\IniAdapter())
+    ->addAdaptor(new FileTypeAdapter\YamlAdapter());
 
 
 ///////////////////////////////////////////////////////////////////////////////

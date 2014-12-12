@@ -4,21 +4,21 @@ use Slender\Configurator\ConfigurationObject;
 
 class ConfigurationObjectTest extends PHPUnit_Framework_TestCase
 {
-
     public function get_configValue(ConfigurationObject $o)
     {
-        $refP = new ReflectionProperty("Slender\\Configurator\\ConfigurationObject", "_config");
+        $refP = new ReflectionProperty("Slender\\Configurator\\ConfigurationObject", "config");
         $refP->setAccessible(true);
+
         return $refP->getValue($o);
     }
 
     public function set_configValue(ConfigurationObject $o, $value)
     {
-        $refP = new ReflectionProperty("Slender\\Configurator\\ConfigurationObject", "_config");
+        $refP = new ReflectionProperty("Slender\\Configurator\\ConfigurationObject", "config");
         $refP->setAccessible(true);
+
         return $refP->setValue($o, $value);
     }
-
 
     public function testOffsetExists()
     {
@@ -44,7 +44,6 @@ class ConfigurationObjectTest extends PHPUnit_Framework_TestCase
         $this->assertNull($o['nonexistant']);
     }
 
-
     public function testOffsetSet()
     {
         $o = new ConfigurationObject();
@@ -58,7 +57,6 @@ class ConfigurationObjectTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('fwibble', $arr['baz']);
     }
 
-
     public function testOffsetUnset()
     {
         $o = new ConfigurationObject();
@@ -71,11 +69,10 @@ class ConfigurationObjectTest extends PHPUnit_Framework_TestCase
 
         $this->assertEmpty($val);
         $this->assertFalse(isset($val['foo']));
-
     }
 
-
-    public function testGetter(){
+    public function testGetter()
+    {
         $o = new ConfigurationObject();
         $arr = ['foo' => 'bar'];
         $this->set_configValue($o, $arr);
@@ -83,5 +80,4 @@ class ConfigurationObjectTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $o->foo);
         $this->assertNull($o->nonexistant_property);
     }
-
 }
