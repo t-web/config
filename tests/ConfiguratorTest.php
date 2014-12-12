@@ -269,34 +269,4 @@ class ConfiguratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($arr, $value);
     }
 
-    /**
-     * @covers Slender\Configurator\Configurator::load
-     */
-    public function testLoadCallsAdapterMerge()
-    {
-        $c = new Configurator();
-        $c->addDirectory('/foo/bar');
-        $c->addDirectory('./foo/bar');
-        $arr = [
-            'foo' => 'bar',
-        ];
-
-        $adapter = m::mock("Slender\\Configurator\\FileTypeAdapter\\ArrayAdapter");
-        $adapter->shouldReceive('loadFrom')
-            ->times(2)
-            ->andReturn($arr);
-
-        $adapter
-            ->shouldReceive("getPreDirectoryConfig")
-            ->once()
-            ->andReturn([]);
-
-        $adapter
-            ->shouldReceive("getPostDirectoryConfig")
-            ->once()
-            ->andReturn([]);
-
-        $c->addAdapter($adapter);
-        $c->load();
-    }
 }

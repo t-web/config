@@ -31,11 +31,13 @@
  */
 namespace Slender\Configurator;
 
+use Slender\Configurator\Interfaces\CacheHandlerInterface;
 use Slender\Configurator\Interfaces\ConfiguratorInterface;
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
 
 /**
  * Class Configurator
+ *
  * @package Slender\Configurator
  */
 class Configurator extends ConfigurationObject
@@ -68,15 +70,27 @@ class Configurator extends ConfigurationObject
      */
     protected $fileTypeAdapters = [];
 
+
+    /** @var  CacheHandlerInterface */
+    protected $cacheHandler;
+
+    /**
+     * @var bool
+     */
+    protected $wasLoadedFromCache = false;
+
     /**
      * @param null $rootPath
      * @param null $env
      */
-    public function __construct($rootPath = null, $env = null)
+    public function __construct($rootPath = null, $env = null, $cacheHandler = null)
     {
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
+        $this->setCacheHandler($cacheHandler);
     }
+
+
 
     /**
      * @param  FileTypeAdapterInterface $adapter
@@ -99,54 +113,17 @@ class Configurator extends ConfigurationObject
      */
     public function addDirectory($dir)
     {
-        // Avoid duplicates
-        if (!in_array($dir, $this->directories)) {
-            $this->directories[] = $dir;
-        }
+        // Have we already loaded a cached version?
+        if(! $this->wasLoadedFromCache){
 
-        // Handle relative paths
-        if (substr($dir, 0, 2) == './') {
-            $dir = $this->getRootPath().substr($dir, 2);
-        }
-
-        // Expand any placeholders
-        $dir = self::replacePlaceholders($dir, [
-            'ENVIRONMENT' => $this->getEnvironment()
-        ]);
-
-        // Remove any trailing slashes from dir
-        $dir = rtrim($dir, '/');
-
-        // Pass to each fileadapter in turn
-        foreach ($this->fileTypeAdapters as $adapter) {
-            $conf = $adapter->loadFrom($dir);
-            $this->merge($conf);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * Wipe the config and load it all again
-     *
-     */
-    public function load()
-    {
-        // Wipe any existing values
-        $this->config = [];
-
-        // Load any initial config from adapters
-        foreach($this->fileTypeAdapters as $adapter){
-            $this->merge( $adapter->getPreDirectoryConfig() );
-        }
-
-        // Loop through each directory
-        foreach ($this->directories as $dir) {
+            // Avoid duplicates
+            if (!in_array($dir, $this->directories)) {
+                $this->directories[] = $dir;
+            }
 
             // Handle relative paths
             if (substr($dir, 0, 2) == './') {
-                $dir = $this->getRootPath().substr($dir, 2);
+                $dir = $this->getRootPath() . substr($dir, 2);
             }
 
             // Expand any placeholders
@@ -164,18 +141,64 @@ class Configurator extends ConfigurationObject
             }
         }
 
-        // Load any post config from adapters
-        foreach($this->fileTypeAdapters as $adapter){
-            $this->merge( $adapter->getPostDirectoryConfig() );
+        return $this;
+    }
+
+
+    /**
+     * Sets a cache handler, and loads the cached
+     * values from it, merging them into config.
+     *
+     * NOTE: While many cache handlers can be used
+     *       to load from, only the _last_ registered
+     *       handler will be used to store the cache
+     *       when finalize() is called
+     *
+     * @param CacheHandlerInterface $cacheHandler
+     * @return $this
+     */
+    public function setCacheHandler($cacheHandler)
+    {
+        $this->cacheHandler = $cacheHandler;
+
+        // If a real handler, load the cache
+        if(!is_null($this->cacheHandler)){
+            $cachedConf = $this->cacheHandler->loadCache();
+            if(!empty($cachedConf)){
+                $this->merge($this->cacheHandler->loadCache());
+                $this->wasLoadedFromCache = true;
+            }
         }
 
+        return $this;
+    }
+
+
+
+    /**
+     * Finalize the configuration.
+     *
+     * This is the point where the configuration is
+     * passed to the registered CacheAdapterInterface to
+     * be stored.
+     *
+     * NOTE: Any directories added _after_ `finalize()` is
+     *       called _will_ be merged into the config, but
+     *       _won't_ be cached. Useful for runtime-specific
+     *       configuration overrides.
+     */
+    public function finalize(){
+        if(!is_null($this->cacheHandler)){
+            $this->cacheHandler->saveCache($this->toArray());
+        }
+        $this->wasLoadedFromCache = false;
     }
 
     /**
      * @param array $conf
      * @return $this
      */
-    public function merge($conf = [])
+    public function merge(array $conf = [])
     {
         $appConfig = &$this->config;
         // Iterate through new top-level keys
@@ -268,5 +291,24 @@ class Configurator extends ConfigurationObject
         return $str;
     }
 
-    public function finalize(){}
+
+
+
+
+
+
+    /**
+     * @return CacheHandlerInterface
+     */
+    public function getCacheHandler()
+    {
+        return $this->cacheHandler;
+    }
+
+
+
+
 }
+
+
+

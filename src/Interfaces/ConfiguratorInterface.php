@@ -88,12 +88,34 @@ interface ConfiguratorInterface
 
 
     /**
+     * Sets a cache handler, and loads the cached
+     * values from it, merging them into config.
+     *
+     * NOTE: While many cache handlers can be used
+     *       to load from, only the _last_ registered
+     *       handler will be used to store the cache
+     *       when finalize() is called
+     *
+     * @param CacheHandlerInterface $cacheHandler
+     * @return $this
+     */
+    public function setCacheHandler($cacheHandler);
+
+
+    /**
+     * Returns the registered cache handler
+     *
+     * @return CacheHandlerInterface|null
+     */
+    public function getCacheHandler();
+
+    /**
      * Merge an array of values into the configuration
      *
      * @param array $conf
      * @return $this
      */
-    public function merge( $conf = [] );
+    public function merge( array $conf = [] );
 
 
     /**
