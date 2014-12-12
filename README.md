@@ -6,6 +6,30 @@ Slender Configurator
 
 ---
 
+## Installation
+
+Install via composer:
+
+```
+composer require slender/configurator
+```
+
+## Usage
+
+### Simple Setup
+
+```php
+<?php
+
+$config = Slender\Configurator\Configurator(dirname(__FILE__));
+$config->addAdaptor(new Slender\Configurator\FileTypeAdapter\ArrayAdapter());
+$config->addDirectory('./config');
+$config->load();
+$config->toArray();
+```
+
+### Advanced Setup
+
 ```php
 <?php
 
@@ -21,13 +45,13 @@ $ENVIRONMENT = 'development';
 //    - passing the optional string $basePath as first argument will allow
 //      using relative paths to folders
 ///////////////////////////////////////////////////////////////////////////////
-$configurator = new Configurator\Configurator($PROJECT_ROOT, $ENVIRONMENT);
+$config = new Configurator\Configurator($PROJECT_ROOT, $ENVIRONMENT);
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Add the adaptors to load the type of files we want
 ///////////////////////////////////////////////////////////////////////////////
-$configurator
+$config
     ->addAdaptor(new FileTypeAdapter\ArrayAdapter())
     ->addAdaptor(new FileTypeAdapter\JsonAdapter())
     ->addAdaptor(new FileTypeAdapter\IniAdapter())
@@ -37,7 +61,7 @@ $configurator
 ///////////////////////////////////////////////////////////////////////////////
 //  Add the paths that we want to load from
 ///////////////////////////////////////////////////////////////////////////////
-$configurator
+$config
     ->addDirectory('/absolute/path/to/folder')
     ->addDirectory('./config/core')
     ->addDirectory('./config/app')
@@ -47,13 +71,13 @@ $configurator
 ///////////////////////////////////////////////////////////////////////////////
 //  Load the config files
 ///////////////////////////////////////////////////////////////////////////////
-$configurator->load();
+$config->load();
 
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Access the data
 ///////////////////////////////////////////////////////////////////////////////
-print_r($configurator->toArray());
+print_r($config->toArray());
 
 ```
