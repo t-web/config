@@ -35,6 +35,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     protected $dataProperty;
 
+    /**
+     * @var ReflectionProperty
+     */
+    protected $adaptersProperty;
+
+    /**
+     * @var ReflectionProperty
+     */
+    protected $cacheHandlerProperty;
+
     protected function setUp()
     {
         $this->config = new Config();
@@ -49,12 +59,36 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->dataProperty = new \ReflectionProperty($this->config, 'data');
         $this->dataProperty->setAccessible(true);
+
+        $this->adaptersProperty = new \ReflectionProperty($this->config, 'fileTypeAdapters');
+        $this->adaptersProperty->setAccessible(true);
+
+        $this->cacheHandlerProperty = new \ReflectionProperty($this->config, 'cacheHandler');
+        $this->cacheHandlerProperty->setAccessible(true);
     }
 
     public function tearDown()
     {
         m::close();
     }
+
+
+    public function testConstructorAddsOptionalCacheHandler()
+    {
+        $dummyCacheHandler = Mockery::mock("Slender\\Configurator\\CacheHandler\\FileCacheHandler");
+        $dummyCacheHandler
+            ->shouldReceive("loadCache")
+            ->once();
+        $config = new Config(null, null, $dummyCacheHandler);
+
+
+        $this->assertNotNull($this->cacheHandlerProperty->getValue($config));
+        $this->assertInstanceOf('Slender\Configurator\Interfaces\CacheHandlerInterface',
+            $this->cacheHandlerProperty->getValue($config));
+        $this->assertEquals($dummyCacheHandler, $this->cacheHandlerProperty->getValue($config));
+
+    }
+
 
     public function testSetEnvironment()
     {
@@ -85,7 +119,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $PATH = '/path/to/dir';
 
         $this->config->setRootPath($PATH);
-        $this->assertEquals($PATH.'/', $this->rootPathProperty->getValue($this->config));
+        $this->assertEquals($PATH . '/', $this->rootPathProperty->getValue($this->config));
     }
 
     public function testGetRootPath()
@@ -121,6 +155,31 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
+    }
+
+    public function testAddDirectoryDummyToSatisfyExpandsRelativeUrls()
+    {
+        $RELATIVE_DIR = './relative/path/to/dir';
+
+        $this->config->addDirectory($RELATIVE_DIR);
+    }
+
+    public function testAddDirectoryCallsAdapterLoadFrom()
+    {
+        $DIR = '/path/to/dir';
+        $dummyAdapter = Mockery::mock("Slender\\Configurator\\Interfaces\\FileTypeAdapterInterface");
+
+        $this->directoriesProperty->setValue($this->config, [$DIR]);
+
+        $dummyAdapter
+            ->shouldReceive('loadFrom')
+            ->with($DIR)
+            ->once()
+            ->andReturn([]);
+        $this->adaptersProperty->setValue($this->config, [$dummyAdapter]);
+
+        $this->config->addDirectory($DIR);
+
     }
 
     public function testAddAdapter()
