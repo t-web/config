@@ -40,7 +40,7 @@ use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
  *
  * @package Slender\Configurator
  */
-class Config extends ConfigurationObject
+class Config extends Collection
     implements ConfigInterface
 {
     /**
@@ -72,18 +72,19 @@ class Config extends ConfigurationObject
      */
     protected $wasLoadedFromCache = false;
 
-
     /**
      * @param null $rootPath
      * @param null $env
+     * @param \Slender\Configurator\Interfaces\CacheHandlerInterface $cacheHandler
      */
-    public function __construct($rootPath = null, $env = null, $cacheHandler = null)
+    public function __construct($rootPath = null, $env = null, CacheHandlerInterface $cacheHandler = null)
     {
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
-        $this->setCacheHandler($cacheHandler);
+        if (!empty($cacheHandler)) {
+            $this->setCacheHandler($cacheHandler);
+        }
     }
-
 
     /**
      * @param  FileTypeAdapterInterface $adapter
@@ -97,7 +98,6 @@ class Config extends ConfigurationObject
         return $this;
     }
 
-
     /**
      * Add a source directory
      *
@@ -108,7 +108,6 @@ class Config extends ConfigurationObject
     {
         // Have we already loaded a cached version?
         if (!$this->wasLoadedFromCache) {
-
 
             // Avoid duplicates
             if (!in_array($dir, $this->directories)) {
@@ -138,7 +137,6 @@ class Config extends ConfigurationObject
         return $this;
     }
 
-
     /**
      * Sets a cache handler, and loads the cached
      * values from it, merging them into config.
@@ -151,7 +149,7 @@ class Config extends ConfigurationObject
      * @param CacheHandlerInterface $cacheHandler
      * @return $this
      */
-    public function setCacheHandler($cacheHandler)
+    public function setCacheHandler(CacheHandlerInterface $cacheHandler)
     {
         $this->cacheHandler = $cacheHandler;
 
@@ -166,7 +164,6 @@ class Config extends ConfigurationObject
 
         return $this;
     }
-
 
     /**
      * Finalize the configuration.
@@ -188,25 +185,22 @@ class Config extends ConfigurationObject
         $this->wasLoadedFromCache = false;
     }
 
-
     /**
      * @param array $conf
      * @return $this
      */
     public function merge(array $conf = [])
     {
-        $this->config = self::mergeArrays($this->config, $conf);
+        $this->data = self::mergeArrays($this->data, $conf);
     }
-
 
     /**
      * @return array
      */
     public function toArray()
     {
-        return $this->config;
+        return $this->data;
     }
-
 
     /**
      * Get the currently defined environment
@@ -217,7 +211,6 @@ class Config extends ConfigurationObject
     {
         return $this->environment;
     }
-
 
     /**
      * Set the enviroment name
@@ -232,7 +225,6 @@ class Config extends ConfigurationObject
         return $this;
     }
 
-
     /**
      * Get the defined root path for relative urls
      *
@@ -242,7 +234,6 @@ class Config extends ConfigurationObject
     {
         return $this->rootPath;
     }
-
 
     /**
      * Set the root path for relative urls
@@ -256,7 +247,6 @@ class Config extends ConfigurationObject
 
         return $this;
     }
-
 
     /**
      * Utility method to replace placeholders in a string
@@ -275,7 +265,6 @@ class Config extends ConfigurationObject
         return $str;
     }
 
-
     /**
      * @return CacheHandlerInterface
      */
@@ -284,12 +273,9 @@ class Config extends ConfigurationObject
         return $this->cacheHandler;
     }
 
-
-
-
-    public static function mergeArrays( $arr1, $arr2)
+    public static function mergeArrays($arr1, $arr2)
     {
-        $merged = array_merge([],$arr1);
+        $merged = array_merge([], $arr1);
 
         // Iterate through new top-level keys
         foreach ($arr2 as $key => $value) {
@@ -300,9 +286,9 @@ class Config extends ConfigurationObject
             }
             // If it exists, and is already an array
             if (is_array($merged[$key])) {
-                if(is_numeric(array_keys($value)[0])){
+                if (is_numeric(array_keys($value)[0])) {
                     // Append
-                    $merged[$key] = array_merge_recursive($merged[$key],$value);
+                    $merged[$key] = array_merge_recursive($merged[$key], $value);
                 } else {
                     $merged[$key] = self::mergeArrays($merged[$key], $value);
                 }
@@ -315,8 +301,4 @@ class Config extends ConfigurationObject
 
         return $merged;
     }
-
 }
-
-
-

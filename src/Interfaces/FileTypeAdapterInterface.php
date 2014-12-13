@@ -45,6 +45,4 @@ interface FileTypeAdapterInterface
      * @return array  The configuration
      */
     public function loadFrom($dir);
-
-
 }

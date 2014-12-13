@@ -13,10 +13,9 @@ use Slender\Configurator\Interfaces\CacheHandlerInterface;
 
 class FileCacheHandler implements CacheHandlerInterface
 {
-
     private $path;
 
-    public function __construct( $cacheFilePath )
+    public function __construct($cacheFilePath)
     {
         $this->path = $cacheFilePath;
     }
@@ -29,7 +28,7 @@ class FileCacheHandler implements CacheHandlerInterface
      */
     public function loadCache()
     {
-        if(is_readable($this->path)){
+        if (is_readable($this->path)) {
             return unserialize(file_get_contents($this->path));
         }
         return [];
@@ -43,6 +42,6 @@ class FileCacheHandler implements CacheHandlerInterface
      */
     public function saveCache(array $conf)
     {
-        file_put_contents($this->path,serialize($conf));
+        file_put_contents($this->path, serialize($conf));
     }
 }

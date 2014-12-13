@@ -34,11 +34,10 @@ namespace Slender\Configurator\Interfaces;
 
 interface ConfigInterface
 {
-
     /**
      * Set the root directory for relative paths
      *
-     * @param string $rootPath  Root directory for relative paths
+     * @param string $rootPath Root directory for relative paths
      * @return $this
      */
     public function setRootPath($rootPath);
@@ -50,11 +49,10 @@ interface ConfigInterface
      */
     public function getRootPath();
 
-
     /**
      * Set the environment name for path expansion
      *
-     * @param string $env  Environment name
+     * @param string $env Environment name
      * @return $this
      */
     public function setEnvironment($env);
@@ -66,26 +64,23 @@ interface ConfigInterface
      */
     public function getEnvironment();
 
-
     /**
      * Add a filetype adapter to use
      *
      * @param FileTypeAdapterInterface $adapter
      * @return $this
      */
-    public function addAdapter( FileTypeAdapterInterface $adapter );
-
+    public function addAdapter(FileTypeAdapterInterface $adapter);
 
     /**
      * Load config files from a directory.
      * The directory path is passed to each registered adapter in
      * the order they were registered.
      *
-     * @param string $dir  The directory to add
+     * @param string $dir The directory to add
      * @return $this
      */
-    public function addDirectory( $dir );
-
+    public function addDirectory($dir);
 
     /**
      * Sets a cache handler, and loads the cached
@@ -99,8 +94,7 @@ interface ConfigInterface
      * @param CacheHandlerInterface $cacheHandler
      * @return $this
      */
-    public function setCacheHandler($cacheHandler);
-
+    public function setCacheHandler(CacheHandlerInterface $cacheHandler);
 
     /**
      * Returns the registered cache handler
@@ -115,8 +109,7 @@ interface ConfigInterface
      * @param array $conf
      * @return $this
      */
-    public function merge( array $conf = [] );
-
+    public function merge(array $conf = []);
 
     /**
      * Return a simple array representation of the
@@ -125,7 +118,6 @@ interface ConfigInterface
      * @return array
      */
     public function toArray();
-
 
     /**
      * Calling this method indicates all files have
