@@ -10,90 +10,90 @@ use Slender\Configurator\Config;
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var ReflectionProperty
+     */
+    protected $environmentProperty;
+
+    /**
+     * @var ReflectionProperty
+     */
+    protected $rootPathProperty;
+
+    /**
+     * @var ReflectionProperty
+     */
+    protected $directoriesProperty;
+
+    /**
+     * @var ReflectionProperty
+     */
+    protected $dataProperty;
+
+    protected function setUp()
+    {
+        $this->config = new Config();
+        $this->environmentProperty = new \ReflectionProperty($this->config, 'environment');
+        $this->environmentProperty->setAccessible(true);
+
+        $this->rootPathProperty = new \ReflectionProperty($this->config, 'rootPath');
+        $this->rootPathProperty->setAccessible(true);
+
+        $this->directoriesProperty = new \ReflectionProperty($this->config, 'directories');
+        $this->directoriesProperty->setAccessible(true);
+
+        $this->dataProperty = new \ReflectionProperty($this->config, 'data');
+        $this->dataProperty->setAccessible(true);
+    }
+
     public function tearDown()
     {
         m::close();
     }
 
-    /**
-     *
-     */
     public function testSetEnvironment()
     {
         $ENV = 'my_env';
 
-        $c = new Config();
-        $c->setEnvironment($ENV);
-
-        $refP = new \ReflectionProperty(get_class($c), 'environment');
-        $refP->setAccessible(true);
-        $value = $refP->getValue($c);
-
-        $this->assertEquals($ENV, $value);
+        $this->config->setEnvironment($ENV);
+        $this->assertEquals($ENV, $this->environmentProperty->getValue($this->config));
     }
 
-    /**
-     *
-     */
     public function testGetEnvironment()
     {
-        $c = new Config();
         $ENV = 'My_ENV';
 
-        $refP = new \ReflectionProperty(get_class($c), 'environment');
-        $refP->setAccessible(true);
-        $refP->setValue($c, $ENV);
-
-        $this->assertEquals($ENV, $c->getEnvironment());
+        $this->environmentProperty->setValue($this->config, $ENV);
+        $this->assertEquals($ENV, $this->config->getEnvironment());
     }
 
-    /**
-     *
-     */
     public function testSetRootPath()
     {
-        $c = new Config();
         $PATH = '/path/to/dir/';
 
-        $c->setRootPath($PATH);
-
-        $refP = new \ReflectionProperty(get_class($c), 'rootPath');
-        $refP->setAccessible(true);
-        $value = $refP->getValue($c);
-
-        $this->assertEquals($PATH, $value);
+        $this->config->setRootPath($PATH);
+        $this->assertEquals($PATH, $this->rootPathProperty->getValue($this->config));
     }
 
-    /**
-     *
-     */
     public function testSetRootPathAddsTrailingSlash()
     {
-        $c = new Config();
         $PATH = '/path/to/dir';
 
-        $c->setRootPath($PATH);
-
-        $refP = new \ReflectionProperty(get_class($c), 'rootPath');
-        $refP->setAccessible(true);
-        $value = $refP->getValue($c);
-
-        $this->assertEquals($PATH.'/', $value);
+        $this->config->setRootPath($PATH);
+        $this->assertEquals($PATH.'/', $this->rootPathProperty->getValue($this->config));
     }
 
-    /**
-     *
-     */
     public function testGetRootPath()
     {
-        $c = new Config();
         $PATH = '/path/to/dir';
 
-        $refP = new \ReflectionProperty(get_class($c), 'rootPath');
-        $refP->setAccessible(true);
-        $refP->setValue($c, $PATH);
-
-        $this->assertEquals($PATH, $c->getRootPath());
+        $this->rootPathProperty->setValue($this->config, $PATH);
+        $this->assertEquals($PATH, $this->config->getRootPath());
     }
 
     /**
@@ -101,56 +101,41 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDirectory()
     {
-        $c = new Config();
         $DIR = "/path/to/dir";
 
-        $returned = $c->addDirectory($DIR);
+        $returned = $this->config->addDirectory($DIR);
 
-        $refP = new \ReflectionProperty(get_class($c), 'directories');
-        $refP->setAccessible(true);
-        $dirs = $refP->getValue($c);
-
+        $dirs = $this->directoriesProperty->getValue($this->config);
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
-        $this->assertEquals($c, $returned);
+        $this->assertEquals($this->config, $returned);
     }
 
-    /**
-     *
-     */
     public function testAddDirectoryPreventsDuplicates()
     {
-        $c = new Config();
         $DIR = "/path/to/dir";
 
-        $c->addDirectory($DIR);
-        $c->addDirectory($DIR);
-
-        $refP = new \ReflectionProperty(get_class($c), 'directories');
-        $refP->setAccessible(true);
-        $dirs = $refP->getValue($c);
+        $this->config->addDirectory($DIR);
+        $this->config->addDirectory($DIR);
+        $dirs = $this->directoriesProperty->getValue($this->config);
 
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
     }
 
-    /**
-     *
-     */
     public function testAddAdapter()
     {
-        $c = new Config();
         $adapter = m::mock('\Slender\Configurator\FileTypeAdapter\ArrayAdapter');
 
-        $returned = $c->addAdapter($adapter);
+        $returned = $this->config->addAdapter($adapter);
 
-        $refP = new \ReflectionProperty(get_class($c), 'fileTypeAdapters');
+        $refP = new \ReflectionProperty($this->config, 'fileTypeAdapters');
         $refP->setAccessible(true);
-        $adapters = $refP->getValue($c);
+        $adapters = $refP->getValue($this->config);
 
         $this->assertEquals(1, count($adapters));
         $this->assertEquals($adapter, $adapters[0]);
-        $this->assertEquals($c, $returned);
+        $this->assertEquals($this->config, $returned);
     }
 
     public function testReplacePlaceholders()
@@ -167,38 +152,31 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWhenEmpty()
     {
-        $c = new Config();
-        $arr = [
+        $data = [
             'foo' => 'bar',
         ];
 
-        $c->merge($arr);
-        $refP = new \ReflectionProperty(get_class($c), 'config');
-        $refP->setAccessible(true);
-
-        $value = $refP->getValue($c);
+        $this->config->merge($data);
+        $value = $this->dataProperty->getValue($this->config);
 
         $this->assertInternalType('array', $value);
         $this->assertArrayHasKey('foo', $value);
         $this->assertEquals('bar', $value['foo']);
-        $this->assertEquals($arr, $value);
+        $this->assertEquals($data, $value);
     }
 
     public function testMergeWhenNotEmpty()
     {
-        $c = new Config();
-        $arr = [
+        $data = [
             'foo' => 'bar',
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), 'config');
-        $refP->setAccessible(true);
-        $refP->setValue($c, [
+        $this->dataProperty->setValue($this->config, [
             'baz' => 'fwibble'
         ]);
 
-        $c->merge($arr);
-        $value = $refP->getValue($c);
+        $this->config->merge($data);
+        $value = $this->dataProperty->getValue($this->config);
 
         $this->assertInternalType('array', $value);
         $this->assertArrayHasKey('foo', $value);
@@ -210,19 +188,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeOverwritesScalarValues()
     {
-        $c = new Config();
-        $arr = [
+        $data = [
             'foo' => 'success',
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), 'config');
-        $refP->setAccessible(true);
-        $refP->setValue($c, [
+        $this->dataProperty->setValue($this->config, [
             'foo' => 'fail'
         ]);
 
-        $c->merge($arr);
-        $value = $refP->getValue($c);
+        $this->config->merge($data);
+        $value = $this->dataProperty->getValue($this->config);
 
         $this->assertInternalType('array', $value);
         $this->assertArrayHasKey('foo', $value);
@@ -232,19 +207,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeMergesArrayValues()
     {
-        $c = new Config();
-        $arr = [
+        $data = [
             'foo' => [3, 4],
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), 'config');
-        $refP->setAccessible(true);
-        $refP->setValue($c, [
+        $this->dataProperty->setValue($this->config, [
             'foo' => [1, 2]
         ]);
 
-        $c->merge($arr);
-        $value = $refP->getValue($c);
+        $this->config->merge($data);
+        $value = $this->dataProperty->getValue($this->config);
 
         $this->assertInternalType('array', $value);
         $this->assertArrayHasKey('foo', $value);
@@ -254,19 +226,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testToArrayWorks()
     {
-        $c = new Config();
-        $arr = [
+        $data = [
             'foo' => [1, 2],
             'baz' => 123,
         ];
 
-        $refP = new \ReflectionProperty(get_class($c), 'config');
-        $refP->setAccessible(true);
-        $refP->setValue($c, $arr);
-
-        $value = $c->toArray();
-
-        $this->assertEquals($arr, $value);
+        $this->dataProperty->setValue($this->config, $data);
+        $this->assertEquals($data, $this->config->toArray());
     }
-
 }

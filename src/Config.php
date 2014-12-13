@@ -75,12 +75,15 @@ class Config extends Collection
     /**
      * @param null $rootPath
      * @param null $env
+     * @param \Slender\Configurator\Interfaces\CacheHandlerInterface $cacheHandler
      */
-    public function __construct($rootPath = null, $env = null, $cacheHandler = null)
+    public function __construct($rootPath = null, $env = null, CacheHandlerInterface $cacheHandler = null)
     {
         $this->setRootPath($rootPath);
         $this->setEnvironment($env);
-        $this->setCacheHandler($cacheHandler);
+        if (!empty($cacheHandler)) {
+            $this->setCacheHandler($cacheHandler);
+        }
     }
 
     /**
