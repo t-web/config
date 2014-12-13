@@ -31,6 +31,7 @@
  */
 namespace Slender\Configurator;
 
+use Slender\Configurator\Exception\NoRegisteredFileTypeAdaptersException;
 use Slender\Configurator\Interfaces\CacheHandlerInterface;
 use Slender\Configurator\Interfaces\ConfigInterface;
 use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
@@ -102,12 +103,19 @@ class Config extends Collection
      * Add a source directory
      *
      * @param $dir
+     * @throws NoRegisteredFileTypeAdaptersException If called before any adapters are registered
      * @return $this
      */
     public function addDirectory($dir)
     {
+
         // Have we already loaded a cached version?
         if (!$this->wasLoadedFromCache) {
+
+            // If there are no adapters, throw an exception as we won't be able to load anything anyway!
+            if( ! count($this->fileTypeAdapters)){
+                throw new NoRegisteredFileTypeAdaptersException();
+            }
 
             // Avoid duplicates
             if (!in_array($dir, $this->directories)) {
@@ -157,7 +165,7 @@ class Config extends Collection
         if (!is_null($this->cacheHandler)) {
             $cachedConf = $this->cacheHandler->loadCache();
             if (!empty($cachedConf)) {
-                $this->merge($this->cacheHandler->loadCache());
+                $this->merge($cachedConf);
                 $this->wasLoadedFromCache = true;
             }
         }
