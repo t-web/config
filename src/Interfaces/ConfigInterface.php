@@ -94,7 +94,7 @@ interface ConfigInterface
      * @param CacheHandlerInterface $cacheHandler
      * @return $this
      */
-    public function setCacheHandler($cacheHandler);
+    public function setCacheHandler(CacheHandlerInterface $cacheHandler);
 
     /**
      * Returns the registered cache handler

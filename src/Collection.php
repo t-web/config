@@ -32,19 +32,15 @@
 namespace Slender\Configurator;
 
 /**
- * Class ConfigurationObject
+ * Class Collection
  * @package Slender\Configurator
  */
-class ConfigurationObject implements \ArrayAccess
+class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
      * @var array
      */
-    protected $config = [];
-
-    //////////////////////////////////////////////////////////////////
-    // Object Property Access
-    //////////////////////////////////////////////////////////////////
+    protected $data = [];
 
     /**
      * @param $offset
@@ -56,7 +52,7 @@ class ConfigurationObject implements \ArrayAccess
         if (!$this->has($offset)) {
             return $default;
         }
-        return $this->config[$offset];
+        return $this->data[$offset];
     }
 
     /**
@@ -65,7 +61,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function has($offset)
     {
-        return isset($this->config[$offset]);
+        return isset($this->data[$offset]);
     }
 
     /**
@@ -74,7 +70,7 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function set($offset, $value)
     {
-        $this->config[$offset] = $value;
+        $this->data[$offset] = $value;
     }
 
     /**
@@ -82,21 +78,8 @@ class ConfigurationObject implements \ArrayAccess
      */
     public function remove($offset)
     {
-        unset($this->config[$offset]);
+        unset($this->data[$offset]);
     }
-
-    /**
-     * @param $offset
-     * @return mixed
-     */
-    public function __get($offset)
-    {
-        return $this->get($offset);
-    }
-
-    //////////////////////////////////////////////////////////////////
-    // ArrayAccess Access
-    //////////////////////////////////////////////////////////////////
 
     /**
      * @param mixed $offset
@@ -131,5 +114,29 @@ class ConfigurationObject implements \ArrayAccess
     public function offsetUnset($offset)
     {
         $this->remove($offset);
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->data);
+    }
+
+    /**
+     * @return \ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->data);
+    }
+
+    public function replace(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
+        return $this;
     }
 }

@@ -8,7 +8,7 @@ use Slender\Configurator\Config;
  * @package Slender\Configurator
  * @covers Slender\Configurator\Config
  */
-class ConfiguratorTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {

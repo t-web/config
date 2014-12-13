@@ -40,7 +40,7 @@ use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
  *
  * @package Slender\Configurator
  */
-class Config extends ConfigurationObject
+class Config extends Collection
     implements ConfigInterface
 {
     /**
@@ -94,7 +94,7 @@ class Config extends ConfigurationObject
         }
         return $this;
     }
-    
+
     /**
      * Add a source directory
      *
@@ -133,7 +133,7 @@ class Config extends ConfigurationObject
 
         return $this;
     }
-    
+
     /**
      * Sets a cache handler, and loads the cached
      * values from it, merging them into config.
@@ -146,7 +146,7 @@ class Config extends ConfigurationObject
      * @param CacheHandlerInterface $cacheHandler
      * @return $this
      */
-    public function setCacheHandler($cacheHandler)
+    public function setCacheHandler(CacheHandlerInterface $cacheHandler)
     {
         $this->cacheHandler = $cacheHandler;
 
@@ -161,7 +161,7 @@ class Config extends ConfigurationObject
 
         return $this;
     }
-    
+
     /**
      * Finalize the configuration.
      *
@@ -188,7 +188,7 @@ class Config extends ConfigurationObject
      */
     public function merge(array $conf = [])
     {
-        $this->config = self::mergeArrays($this->config, $conf);
+        $this->data = self::mergeArrays($this->data, $conf);
     }
 
     /**
@@ -196,7 +196,7 @@ class Config extends ConfigurationObject
      */
     public function toArray()
     {
-        return $this->config;
+        return $this->data;
     }
 
     /**
@@ -269,10 +269,10 @@ class Config extends ConfigurationObject
     {
         return $this->cacheHandler;
     }
-    
-    public static function mergeArrays( $arr1, $arr2)
+
+    public static function mergeArrays($arr1, $arr2)
     {
-        $merged = array_merge([],$arr1);
+        $merged = array_merge([], $arr1);
 
         // Iterate through new top-level keys
         foreach ($arr2 as $key => $value) {
@@ -283,9 +283,9 @@ class Config extends ConfigurationObject
             }
             // If it exists, and is already an array
             if (is_array($merged[$key])) {
-                if(is_numeric(array_keys($value)[0])){
+                if (is_numeric(array_keys($value)[0])) {
                     // Append
-                    $merged[$key] = array_merge_recursive($merged[$key],$value);
+                    $merged[$key] = array_merge_recursive($merged[$key], $value);
                 } else {
                     $merged[$key] = self::mergeArrays($merged[$key], $value);
                 }
