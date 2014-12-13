@@ -73,6 +73,11 @@ class CollectionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->bag->count());
     }
 
+    public function testIterator()
+    {
+        $this->assertInstanceOf('ArrayIterator', $this->bag->getIterator());
+    }
+
     public function testOffsetExists()
     {
         $this->property->setValue($this->bag, ['foo' => 'bar']);

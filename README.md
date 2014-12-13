@@ -32,7 +32,6 @@ composer require slender/configurator
 $config = Slender\Configurator\Config(dirname(__FILE__));
 $config->addAdaptor(new Slender\Configurator\FileTypeAdapter\ArrayAdapter());
 $config->addDirectory('./config');
-$config->load();
 $settings = $config->toArray();
 ```
 
