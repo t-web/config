@@ -109,6 +109,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($dirs));
         $this->assertEquals($DIR, $dirs[0]);
         $this->assertEquals($this->config, $returned);
+
+        $DIR2 = './path';
+        $returned = $this->config->addDirectory($DIR2);
+        $dirs = $this->directoriesProperty->getValue($this->config);
+        $this->assertEquals(2, count($dirs));
+        $this->assertEquals($DIR2, $dirs[1]);
+        $this->assertEquals($this->config, $returned);
     }
 
     public function testAddDirectoryPreventsDuplicates()
