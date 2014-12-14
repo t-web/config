@@ -366,4 +366,44 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cacheHandler, $value);
     }
 
+
+
+    public function testStaticMergeArrays()
+    {
+        $data_A = [
+            'a' => 'bar',
+            'b' => [
+                "a" => "five",
+                "b" => "six",
+            ],
+            'c' => [ 1, 2, 3 ]
+        ];
+
+        $data_B = [
+            'a' => 'baz',
+            'b' => [
+                "a" => "seven",
+                "c" => "eight",
+            ],
+            'c' => [ 9, 8, 7 ]
+        ];
+
+
+        $expected_data = [
+            'a' => 'baz',
+            'b' => [
+                'a' => 'seven',
+                'b' => 'six',
+                'c' => 'eight'
+            ],
+            'c' => [ 1,2,3, 9,8,7 ]
+        ];
+
+
+        $returned_data = Config::mergeArrays($data_A, $data_B);
+
+        $this->assertEquals($expected_data, $returned_data);
+
+    }
+
 }
