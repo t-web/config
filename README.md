@@ -7,7 +7,7 @@ Slender Configurator
 ---
 A fast, simple multi-format configuration loader with __no dependencies*__. 
 
-Allows you to load configurations from multiple directories, and in several different formats including _PHP Arrays_, _JSON_, _YAML_, and _INI_. Directory path placeholders allow you to assign dynamic paths based on environment or location, and an optional caching mechanism can speed up loading exponentially.
+Allows you to load configurations from multiple directories, and in several different formats including _PHP Arrays_, _JSON_, _YAML_, and _INI_. Directory path placeholders allow you to assign dynamic paths based on environment or location, and an optional caching mechanism can speed up loading drastically.
 
 
 \* YAML parsing requires `symfony/yaml`
