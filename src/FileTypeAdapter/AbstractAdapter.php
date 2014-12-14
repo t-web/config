@@ -58,10 +58,7 @@ abstract class AbstractAdapter implements FileTypeAdapterInterface
      * @param $filePath
      * @return array
      */
-    public function parse($filePath)
-    {
-        return [];
-    }
+    abstract public function parse($filePath);
 
     /**
      * Load configuration from a specified directory,
