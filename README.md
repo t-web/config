@@ -1,13 +1,13 @@
 Slender Configurator
-===
-[![Latest Stable Version](https://poser.pugx.org/slender/configurator/v/stable.svg)](https://packagist.org/packages/slender/configurator) [![Total Downloads](https://poser.pugx.org/slender/configurator/downloads.svg)](https://packagist.org/packages/slender/configurator) [![License](https://poser.pugx.org/slender/configurator/license.svg)](https://packagist.org/packages/slender/configurator)
+=== 
+[![Latest Stable Version](https://poser.pugx.org/slender/configurator/v/stable.svg)](https://packagist.org/packages/slender/configurator)  [![License](https://poser.pugx.org/slender/configurator/license.svg)](https://packagist.org/packages/slender/configurator)
 
 [![Build Status](https://travis-ci.org/alanpich/Slender-Configurator.svg?branch=develop)](https://travis-ci.org/alanpich/Slender-Configurator) [![Coverage Status](https://coveralls.io/repos/alanpich/Slender-Configurator/badge.png?branch=develop)](https://coveralls.io/r/alanpich/Slender-Configurator?branch=develop) 
 
 ---
 A fast, simple multi-format configuration loader with __no dependencies*__. 
 
-Allows you to load configurations from multiple directories, and in several different formats including _PHP Arrays_, _JSON_, _YAML_, and _INI_. Directory path placeholders allow you to assign dynamic paths based on environment or location, and an optional caching mechanism can speed up loading exponentially.
+Allows you to load configurations from multiple directories, and in several different formats including _PHP Arrays_, _JSON_, _YAML_, and _INI_. Directory path placeholders allow you to assign dynamic paths based on environment or location, and an optional caching mechanism can speed up loading drastically.
 
 
 \* YAML parsing requires `symfony/yaml`
