@@ -1,10 +1,10 @@
 {
-    "name": "slender/configurator",
+    "name": "slender/config",
     "description": "Multi-format configuration loader",
     "type": "library",
     "license": "MIT",
     "version": "1.0.0",
-    "homepage": "https://github.com/alanpich/Slender-Configurator",
+    "homepage": "https://github.com/slenderphp/config",
     "keywords": [
         "slender",
         "config",
@@ -17,7 +17,7 @@
     "authors": [
         {
             "name": "Alan Pich",
-            "email": "alanp@native.com"
+            "email": "alan.pich@gmail.com"
         }
     ],
     "suggest": {
