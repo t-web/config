@@ -1,6 +1,6 @@
 <?php
 
-use Slender\Configurator\Collection;
+use Slender\Config\Collection;
 
 class CollectionTest extends PHPUnit_Framework_TestCase
 {

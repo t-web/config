@@ -18,6 +18,10 @@
         {
             "name": "Alan Pich",
             "email": "alan.pich@gmail.com"
+        },
+        {
+            "name": "Andrew Smith",
+            "email": "a.smith@silentworks.co.uk"
         }
     ],
     "suggest": {
@@ -25,7 +29,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Slender\\Configurator\\": "src"
+            "Slender\\Config\\": "src"
         }
     },
     "require": {

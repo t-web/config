@@ -1,6 +1,6 @@
 <?php
 
-use Slender\Configurator\CacheHandler\FileCacheHandler;
+use Slender\Config\CacheHandler\FileCacheHandler;
 
 class FileCacheHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,7 +33,7 @@ class FileCacheHandlerTest extends \PHPUnit_Framework_TestCase
     public function testConstructorSetsFilePathFromFirstArgument()
     {
 
-        $pathProperty = new ReflectionProperty("Slender\\Configurator\\CacheHandler\\FileCacheHandler", "path");
+        $pathProperty = new ReflectionProperty("Slender\\Config\\CacheHandler\\FileCacheHandler", "path");
         $pathProperty->setAccessible(true);
 
         $handler = new FileCacheHandler($this->filePath);
@@ -61,7 +61,7 @@ class FileCacheHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadCacheReturnsEmptyArrayIfSourceFileNotReadable()
     {
-        $pathProperty = new ReflectionProperty("Slender\\Configurator\\CacheHandler\\FileCacheHandler", "path");
+        $pathProperty = new ReflectionProperty("Slender\\Config\\CacheHandler\\FileCacheHandler", "path");
         $pathProperty->setAccessible(true);
 
         $pathProperty->setValue($this->handler, '/invalid/file/path');

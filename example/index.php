@@ -1,16 +1,15 @@
 <?php
-use Slender\Configurator\CacheHandler\FileCacheHandler;
-use Slender\Configurator\Config;
-use Slender\Configurator\FileTypeAdapter;
+use Slender\Config\CacheHandler\FileCacheHandler;
+use Slender\Config\Config;
+use Slender\Config\FileTypeAdapter;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
 
-$configurator = new Config();
+$config = new Config();
 $configCacheHandler = new FileCacheHandler(dirname(__FILE__).'/config.cache');
 
-$configurator
-    ->setRootPath(dirname(__FILE__))
+$config->setRootPath(dirname(__FILE__))
     ->setEnvironment("development")
 //    ->setCacheHandler($configCacheHandler)
     ->addAdapter(new FileTypeAdapter\ArrayAdapter())
@@ -18,11 +17,10 @@ $configurator
     ->addAdapter(new FileTypeAdapter\IniAdapter())
     ->addAdapter(new FileTypeAdapter\YamlAdapter());
 
-$configurator
-    ->addDirectory('./config')
+$config->addDirectory('./config')
     ->addDirectory('./config/{ENVIRONMENT}')
     ->finalize();
 
 
 
-print_r($configurator->toArray());
+print_r($config->toArray());

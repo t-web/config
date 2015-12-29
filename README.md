@@ -1,8 +1,8 @@
-Slender Configurator
+Slender Config
 === 
 [![Latest Stable Version](https://poser.pugx.org/slender/configurator/v/stable.svg)](https://packagist.org/packages/slender/configurator)  [![License](https://poser.pugx.org/slender/configurator/license.svg)](https://packagist.org/packages/slender/configurator)
 
-[![Build Status](https://travis-ci.org/alanpich/Slender-Configurator.svg?branch=develop)](https://travis-ci.org/alanpich/Slender-Configurator) [![Coverage Status](https://coveralls.io/repos/alanpich/Slender-Configurator/badge.png?branch=develop)](https://coveralls.io/r/alanpich/Slender-Configurator?branch=develop) 
+[![Build Status](https://travis-ci.org/slenderphp/config.svg?branch=develop)](https://travis-ci.org/slenderphp/config) [![Coverage Status](https://coveralls.io/repos/slenderphp/config/badge.png?branch=develop)](https://coveralls.io/r/slenderphp/config?branch=develop) 
 
 ---
 A fast, simple multi-format configuration loader with __no dependencies*__. 
@@ -19,7 +19,7 @@ Allows you to load configurations from multiple directories, and in several diff
 Install via composer:
 
 ```
-composer require slender/configurator
+composer require slender/config
 ```
 
 ## Usage
@@ -29,8 +29,8 @@ composer require slender/configurator
 ```php
 <?php
 
-$config = Slender\Configurator\Config(dirname(__FILE__));
-$config->addAdaptor(new Slender\Configurator\FileTypeAdapter\ArrayAdapter());
+$config = Slender\Config\Config(dirname(__FILE__));
+$config->addAdaptor(new Slender\Config\FileTypeAdapter\ArrayAdapter());
 $config->addDirectory('./config');
 $settings = $config->toArray();
 ```
@@ -40,8 +40,8 @@ $settings = $config->toArray();
 ```php
 <?php
 
-use Slender\Configurator;
-use Slender\Configurator\FileTypeAdapter;
+use Slender\Config;
+use Slender\Config\FileTypeAdapter;
 
 $PROJECT_ROOT = dirname(__FILE__);
 $ENVIRONMENT = 'development';
@@ -52,23 +52,22 @@ $ENVIRONMENT = 'development';
 //    - passing the optional string $basePath as first argument will allow
 //      using relative paths to folders
 ///////////////////////////////////////////////////////////////////////////////
-$config = new Configurator\Config($PROJECT_ROOT, $ENVIRONMENT);
+$config = new Config\Config($PROJECT_ROOT, $ENVIRONMENT);
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Add a cache handler
 //    - Adding a cache handler means that the entire, merged configuration 
 //      can be cached once it is prepared, greatly speeding up future loads.
 ///////////////////////////////////////////////////////////////////////////////
-$config->setCacheHandler(new Configurator\CacheHandler\FileCacheHandler(
-		$PROJECT_ROOT.'/config.cache'
-	));
+$config->setCacheHandler(new Config\CacheHandler\FileCacheHandler(
+	$PROJECT_ROOT.'/config.cache'
+));
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  Add the adaptors to load the type of files we want
 ///////////////////////////////////////////////////////////////////////////////
-$config
-    ->addAdaptor(new FileTypeAdapter\ArrayAdapter())
+$config->addAdaptor(new FileTypeAdapter\ArrayAdapter())
     ->addAdaptor(new FileTypeAdapter\JsonAdapter())
     ->addAdaptor(new FileTypeAdapter\IniAdapter())
     ->addAdaptor(new FileTypeAdapter\YamlAdapter());
@@ -79,8 +78,7 @@ $config
 //  then `finalize` the configuration to signal that
 //  the current config should be cached.
 ///////////////////////////////////////////////////////////////////////////////
-$config
-    ->addDirectory('/absolute/path/to/folder')
+$config->addDirectory('/absolute/path/to/folder')
     ->addDirectory('./config/core')
     ->addDirectory('./config/app')
     ->addDirectory('./config/{ENVIRONMENT}'))
@@ -99,18 +97,18 @@ print_r($config->toArray());
 ## Caching Configurations for speed
 Loading configurations from multiple files and merging their values on every page load can be a costly and time-consuming exercise for your script. To avoid this weight on your server, you ~~can~~ should cache your app's configuration on the first load, and use the cached version on future loads.
 
-To activate cacheing for your Config instance, you need to pass an implementation of `CacheHandlerInterface` to your config's `setCacheHandler()` method. When you do this, it will automatically try to load a configuration from the cache, and disable any file loading and parsing until the `finalize()` method is called. 
+To activate caching for your Config instance, you need to pass an implementation of `CacheHandlerInterface` to your config's `setCacheHandler()` method. When you do this, it will automatically try to load a configuration from the cache, and disable any file loading and parsing until the `finalize()` method is called. 
 
 #### Example
 ```php
 <?php
-use Slender\Configurator;
+use Slender\Config;
 
 // Your config instance
-$config = new Configurator\Config();
+$config = new Config\Config();
 
 // Create the CacheHandler to manage caching
-$cacher = new Configurator\CacheHandler\FileCacheHandler("/path/to/cache.file");
+$cacher = new Config\CacheHandler\FileCacheHandler("/path/to/cache.file");
 
 // Add your adapters as normal. They will only
 // be used on a 'miss' run - i.e. when there is no cached value.

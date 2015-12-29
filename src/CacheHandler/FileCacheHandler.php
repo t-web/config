@@ -1,15 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alanp
- * Date: 12/12/14
- * Time: 13:27
- */
+namespace Slender\Config\CacheHandler;
 
-namespace Slender\Configurator\CacheHandler;
-
-
-use Slender\Configurator\Interfaces\CacheHandlerInterface;
+use Slender\Config\Interfaces\CacheHandlerInterface;
 
 class FileCacheHandler implements CacheHandlerInterface
 {

@@ -1,12 +1,12 @@
 <?php
 /**
- * Slender Configurator
+ * Slender Config
  *
  * @author      Alan Pich <alan.pich@gmail.com>
  * @copyright   2015 Alan Pich
- * @link        http://github.com/alanpich/Slender-Configurator
- * @license     http://github.com/alanpich/Slender-Configurator/blob/master/LICENSE
- * @package     Slender\Configurator
+ * @link        http://github.com/slenderphp/config
+ * @license     http://github.com/slenderphp/config/blob/master/LICENSE
+ * @package     Slender\Config
  *
  * MIT LICENSE
  *
@@ -29,20 +29,19 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Slender\Configurator;
+namespace Slender\Config;
 
-use Slender\Configurator\Exception\NoRegisteredFileTypeAdaptersException;
-use Slender\Configurator\Interfaces\CacheHandlerInterface;
-use Slender\Configurator\Interfaces\ConfigInterface;
-use Slender\Configurator\Interfaces\FileTypeAdapterInterface;
+use Slender\Config\Exception\NoRegisteredFileTypeAdaptersException;
+use Slender\Config\Interfaces\CacheHandlerInterface;
+use Slender\Config\Interfaces\ConfigInterface;
+use Slender\Config\Interfaces\FileTypeAdapterInterface;
 
 /**
- * Class Configurator
+ * Class Config
  *
- * @package Slender\Configurator
+ * @package Slender\Config
  */
-class Config extends Collection
-    implements ConfigInterface
+class Config extends Collection implements ConfigInterface
 {
     /**
      * @var string
@@ -76,7 +75,7 @@ class Config extends Collection
     /**
      * @param null $rootPath
      * @param null $env
-     * @param \Slender\Configurator\Interfaces\CacheHandlerInterface $cacheHandler
+     * @param \Slender\Config\Interfaces\CacheHandlerInterface $cacheHandler
      */
     public function __construct($rootPath = null, $env = null, CacheHandlerInterface $cacheHandler = null)
     {

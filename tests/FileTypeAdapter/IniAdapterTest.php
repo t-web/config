@@ -4,13 +4,13 @@ class IniAdapterTest extends PHPUnit_Framework_TestCase
 {
     public function testLoadFrom()
     {
-        $adapter = new \Slender\Configurator\FileTypeAdapter\IniAdapter();
+        $adapter = new \Slender\Config\FileTypeAdapter\IniAdapter();
         $this->assertInternalType('array', $adapter->loadFrom('foo'));
     }
 
     public function testParse()
     {
-        $adapter = new \Slender\Configurator\FileTypeAdapter\IniAdapter();
+        $adapter = new \Slender\Config\FileTypeAdapter\IniAdapter();
         $result = $adapter->parse(__DIR__ . '/../config/config.ini');
 
         $this->assertCount(2, $result);

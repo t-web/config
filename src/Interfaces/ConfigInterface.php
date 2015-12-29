@@ -1,12 +1,12 @@
 <?php
 /**
- * Slender Configurator
+ * Slender Config
  *
  * @author      Alan Pich <alan.pich@gmail.com>
  * @copyright   2015 Alan Pich
- * @link        http://github.com/alanpich/Slender-Configurator
- * @license     http://github.com/alanpich/Slender-Configurator/blob/master/LICENSE
- * @package     Slender\Configurator
+ * @link        http://github.com/slenderphp/config
+ * @license     http://github.com/slenderphp/config/blob/master/LICENSE
+ * @package     Slender\Config
  *
  * MIT LICENSE
  *
@@ -29,8 +29,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Slender\Configurator\Interfaces;
-
+namespace Slender\Config\Interfaces;
 
 interface ConfigInterface
 {

@@ -1,12 +1,12 @@
 <?php
 
 use Mockery as m;
-use Slender\Configurator\Config;
+use Slender\Config\Config;
 
 /**
- * Class ConfiguratorTest
- * @package Slender\Configurator
- * @covers Slender\Configurator\Config
+ * Class ConfigTest
+ * @package Slender\Config
+ * @covers Slender\Config\Config
  */
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -75,7 +75,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorAddsOptionalCacheHandler()
     {
-        $dummyCacheHandler = Mockery::mock("Slender\\Configurator\\CacheHandler\\FileCacheHandler");
+        $dummyCacheHandler = Mockery::mock("Slender\\Config\\CacheHandler\\FileCacheHandler");
         $dummyCacheHandler
             ->shouldReceive("loadCache")
             ->once();
@@ -83,7 +83,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
 
         $this->assertNotNull($this->cacheHandlerProperty->getValue($config));
-        $this->assertInstanceOf('Slender\Configurator\Interfaces\CacheHandlerInterface',
+        $this->assertInstanceOf('Slender\Config\Interfaces\CacheHandlerInterface',
             $this->cacheHandlerProperty->getValue($config));
         $this->assertEquals($dummyCacheHandler, $this->cacheHandlerProperty->getValue($config));
 
@@ -131,12 +131,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Slender\Configurator\Config::addDirectory()
+     * @covers Slender\Config\Config::addDirectory()
      */
     public function testAddDirectory()
     {
         $DIR = "/path/to/dir";
-        $dummyAdapter = Mockery::mock("Slender\\Configurator\\Interfaces\\FileTypeAdapterInterface");
+        $dummyAdapter = Mockery::mock("Slender\\Config\\Interfaces\\FileTypeAdapterInterface");
         $dummyAdapter
             ->shouldReceive('loadFrom')
             ->andReturn([]);
@@ -161,7 +161,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $DIR = "/path/to/dir";
 
-        $dummyAdapter = Mockery::mock("Slender\\Configurator\\Interfaces\\FileTypeAdapterInterface");
+        $dummyAdapter = Mockery::mock("Slender\\Config\\Interfaces\\FileTypeAdapterInterface");
         $dummyAdapter
             ->shouldReceive('loadFrom')
             ->andReturn([]);
@@ -179,7 +179,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $RELATIVE_DIR = './relative/path/to/dir';
 
-        $dummyAdapter = Mockery::mock("Slender\\Configurator\\Interfaces\\FileTypeAdapterInterface");
+        $dummyAdapter = Mockery::mock("Slender\\Config\\Interfaces\\FileTypeAdapterInterface");
         $dummyAdapter
             ->shouldReceive('loadFrom')
             ->andReturn([]);
@@ -191,7 +191,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testAddDirectoryCallsAdapterLoadFrom()
     {
         $DIR = '/path/to/dir';
-        $dummyAdapter = Mockery::mock("Slender\\Configurator\\Interfaces\\FileTypeAdapterInterface");
+        $dummyAdapter = Mockery::mock("Slender\\Config\\Interfaces\\FileTypeAdapterInterface");
 
         $this->directoriesProperty->setValue($this->config, [$DIR]);
 
@@ -209,14 +209,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testAddDirectoryThrowsExceptionIfNoAdapters()
     {
-        $this->setExpectedException('Slender\Configurator\Exception\NoRegisteredFileTypeAdaptersException');
+        $this->setExpectedException('Slender\Config\Exception\NoRegisteredFileTypeAdaptersException');
 
         $this->config->addDirectory('/path/too/foo');
     }
 
     public function testAddAdapter()
     {
-        $adapter = m::mock('\Slender\Configurator\FileTypeAdapter\ArrayAdapter');
+        $adapter = m::mock('\Slender\Config\FileTypeAdapter\ArrayAdapter');
 
         $returned = $this->config->addAdapter($adapter);
 
@@ -328,7 +328,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCacheHandler()
     {
-        $cacheHandler = Mockery::mock("Slender\\Configurator\\Interfaces\\CacheHandlerInterface");
+        $cacheHandler = Mockery::mock("Slender\\Config\\Interfaces\\CacheHandlerInterface");
         $cacheHandler
             ->shouldReceive('loadCache')
             ->once()
@@ -340,7 +340,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testFinalize()
     {
-        $cacheHandler = Mockery::mock("Slender\\Configurator\\Interfaces\\CacheHandlerInterface");
+        $cacheHandler = Mockery::mock("Slender\\Config\\Interfaces\\CacheHandlerInterface");
         $cacheHandler
             ->shouldReceive('saveCache')
             ->once()
@@ -359,7 +359,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCacheHandler()
     {
-        $cacheHandler = Mockery::mock("Slender\\Configurator\\Interfaces\\CacheHandlerInterface");
+        $cacheHandler = Mockery::mock("Slender\\Config\\Interfaces\\CacheHandlerInterface");
         $this->cacheHandlerProperty->setValue($this->config,$cacheHandler);
 
         $value = $this->config->getCacheHandler();

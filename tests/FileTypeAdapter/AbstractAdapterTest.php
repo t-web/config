@@ -1,6 +1,6 @@
 <?php
 
-use Slender\Configurator\FileTypeAdapter\AbstractAdapter;
+use Slender\Config\FileTypeAdapter\AbstractAdapter;
 
 
 class ExampleAdapter extends AbstractAdapter
